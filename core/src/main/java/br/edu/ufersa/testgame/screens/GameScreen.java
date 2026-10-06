@@ -1,29 +1,36 @@
 package br.edu.ufersa.testgame.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import br.edu.ufersa.testgame.entities.Player;
+import br.edu.ufersa.testgame.world.WorldGenerator;
 
 public class GameScreen extends ScreenAdapter {
     private SpriteBatch batch;
     private Texture background;
     private Viewport viewport;
     private Player player;
+    private WorldGenerator mapGenerator;
 
     public GameScreen() {
         batch = new SpriteBatch();
         background = new Texture("viewporttest.png");
-        viewport = new StretchViewport(320, 180);
-        player = new Player(100, 50);
+        viewport = new FitViewport(320, 180);
+        player = new Player(100, 80);
+        mapGenerator = new WorldGenerator(8, 6);
     }
 
     @Override
     public void render(float delta) {
+        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.SPACE)) {
+            mapGenerator.generateChunk();
+        }
         player.update(delta);
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         viewport.apply();
