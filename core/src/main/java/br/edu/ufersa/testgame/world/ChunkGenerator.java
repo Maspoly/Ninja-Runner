@@ -16,6 +16,7 @@ public class ChunkGenerator {
         this.previousChunk = previousChunk;
         currentColumn = 0;
         chunk = new Chunk(width, height);
+        chunk.incrementSection(previousChunk);
     }
 
     public void generateColumn() {
@@ -44,8 +45,9 @@ public class ChunkGenerator {
                 }
             }
         }
-        // as duas últimas linhas da coluna devem ser iguais
-        chunk.chunk[height - 2][currentColumn] = chunk.chunk[height - 1][currentColumn];
+        // as três últimas linhas da coluna devem ser iguais
+        chunk.chunk[height
+                - 2][currentColumn] = chunk.chunk[height - 3][currentColumn] = chunk.chunk[height - 1][currentColumn];
         // final da geração da coluna, incrementa o currentColumn e salva o arquivo de
         // debug
         currentColumn++;

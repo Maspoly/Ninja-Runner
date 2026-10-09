@@ -18,7 +18,7 @@ public class Player {
     // Física do pulo
     private float velocityY = 0;
     private final float GRAVITY = -800;
-    private final float JUMP_SPEED = 250;
+    private final float JUMP_SPEED = 180;
     private final float JUMP_FORCE = 500;
     private final float MAX_JUMP_TIME = 0.15f;
     private float jumpTime = 0;
@@ -29,7 +29,7 @@ public class Player {
     public Player(float x, float y) {
         this.x = x;
         this.y = y;
-        this.idleSheet = new Texture("player_idle-Sheet.png");
+        this.idleSheet = new Texture("player/player_idle-Sheet.png");
         TextureRegion[][] frames = TextureRegion.split(
                 this.idleSheet,
                 this.idleSheet.getWidth() / 4,
@@ -52,7 +52,6 @@ public class Player {
                 Gdx.input.isKeyPressed(Input.Keys.D)) {
             this.x += (this.speed * delta);
         }
-        System.out.println("FPS: " + Gdx.graphics.getFramesPerSecond());
         // =========================
         // PULO
         // =========================
@@ -95,8 +94,8 @@ public class Player {
         // =========================
         // CHÃO
         // =========================
-        if (this.y <= 50) {
-            this.y = 50;
+        if (this.y <= 45) {
+            this.y = 45;
             velocityY = 0;
             onGround = true;
             jumping = false;

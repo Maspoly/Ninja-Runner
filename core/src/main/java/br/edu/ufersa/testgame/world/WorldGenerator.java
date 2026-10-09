@@ -12,8 +12,8 @@ public class WorldGenerator {
     public WorldGenerator(int chunkWidth, int chunkHeight) {
         this.chunkWidth = chunkWidth;
         this.chunkHeight = chunkHeight;
-        first = null;
-        last = null;
+        this.first = null;
+        this.last = null;
     }
 
     public void generateChunk() {
@@ -22,7 +22,7 @@ public class WorldGenerator {
             saveDebugFile();
             return;
         }
-        ChunkGenerator generator = new ChunkGenerator(chunkWidth, chunkHeight, last.chunk);
+        ChunkGenerator generator = new ChunkGenerator(chunkWidth, chunkHeight, last.getChunk());
         for (int i = 0; i < chunkWidth; i++) {
             generator.generateColumn();
         }
@@ -36,9 +36,9 @@ public class WorldGenerator {
                 ChunkNode current = first;
                 while (current != null) {
                     for (int x = 0; x < chunkWidth; x++) {
-                        writer.write(current.chunk.chunk[y][x] + " ");
+                        writer.write(current.getChunk().chunk[y][x] + " ");
                     }
-                    current = current.next;
+                    current = current.getNext();
                 }
                 writer.write("\n");
             }
@@ -57,8 +57,17 @@ public class WorldGenerator {
         for (int x = 0; x < chunkWidth; x++) {
             chunk.chunk[chunkHeight - 1][x] = ChunkElement.FLOOR.ordinal();
             chunk.chunk[chunkHeight - 2][x] = ChunkElement.FLOOR.ordinal();
+            chunk.chunk[chunkHeight - 3][x] = ChunkElement.FLOOR.ordinal();
         }
         return chunk;
+    }
+
+    public ChunkNode getFirst() {
+        return first;
+    }
+
+    public ChunkNode getLast() {
+        return last;
     }
 
     private void addChunk(Chunk chunk) {
@@ -68,7 +77,8 @@ public class WorldGenerator {
             last = newNode;
             return;
         }
-        last.next = newNode;
+        last.setNext(newNode);
+        newNode.setPrevious(last);
         last = newNode;
     }
 }

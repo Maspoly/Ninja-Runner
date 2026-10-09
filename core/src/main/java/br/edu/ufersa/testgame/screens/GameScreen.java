@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import br.edu.ufersa.testgame.entities.Player;
+import br.edu.ufersa.testgame.world.Mapper;
 import br.edu.ufersa.testgame.world.WorldGenerator;
 
 public class GameScreen extends ScreenAdapter {
@@ -17,19 +18,23 @@ public class GameScreen extends ScreenAdapter {
     private Viewport viewport;
     private Player player;
     private WorldGenerator mapGenerator;
+    private Mapper mapper;
+    private float worldSpeed;
 
     public GameScreen() {
         batch = new SpriteBatch();
-        background = new Texture("viewporttest.png");
+        background = new Texture("background/viewporttest.png");
         viewport = new FitViewport(320, 180);
         player = new Player(100, 80);
-        mapGenerator = new WorldGenerator(8, 6);
+        mapGenerator = new WorldGenerator(8, 7);
+        mapper = new Mapper(mapGenerator);
+        worldSpeed = 100.0f;
     }
 
     @Override
     public void render(float delta) {
-        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.SPACE)) {
-            mapGenerator.generateChunk();
+        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ENTER)) {
+            mapper.moveToNextChunk();
         }
         player.update(delta);
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
@@ -37,6 +42,8 @@ public class GameScreen extends ScreenAdapter {
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         batch.draw(background, 0, 0);
+        mapper.incrementWorldOffsetX(delta * worldSpeed);
+        mapper.drawChunk(batch);
         player.render(batch);
         batch.end();
     }
