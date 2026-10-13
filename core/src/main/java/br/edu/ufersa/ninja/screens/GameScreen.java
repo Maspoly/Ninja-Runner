@@ -1,4 +1,4 @@
-package br.edu.ufersa.testgame.screens;
+package br.edu.ufersa.ninja.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -8,9 +8,9 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import br.edu.ufersa.testgame.entities.Player;
-import br.edu.ufersa.testgame.world.Mapper;
-import br.edu.ufersa.testgame.world.WorldGenerator;
+import br.edu.ufersa.ninja.entities.Player;
+import br.edu.ufersa.ninja.world.Mapper;
+import br.edu.ufersa.ninja.world.WorldGenerator;
 
 public class GameScreen extends ScreenAdapter {
     private SpriteBatch batch;

@@ -1,4 +1,4 @@
-package br.edu.ufersa.testgame.entities;
+package br.edu.ufersa.ninja.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -41,9 +41,7 @@ public class Player {
 
     public void update(float delta) {
         this.stateTime += delta;
-        // =========================
         // MOVIMENTO HORIZONTAL
-        // =========================
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) ||
                 Gdx.input.isKeyPressed(Input.Keys.A)) {
             this.x -= (this.speed * delta);
@@ -52,9 +50,7 @@ public class Player {
                 Gdx.input.isKeyPressed(Input.Keys.D)) {
             this.x += (this.speed * delta);
         }
-        // =========================
         // PULO
-        // =========================
         boolean spacePressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
         // Começou a apertar SPACE
         if (spacePressed && !spaceWasPressed) {
@@ -83,17 +79,11 @@ public class Player {
         }
         // Guarda o estado do SPACE
         spaceWasPressed = spacePressed;
-        // =========================
         // GRAVIDADE
-        // =========================
         velocityY += GRAVITY * delta;
-        // =========================
         // MOVIMENTO VERTICAL
-        // =========================
         this.y += velocityY * delta;
-        // =========================
         // CHÃO
-        // =========================
         if (this.y <= 45) {
             this.y = 45;
             velocityY = 0;

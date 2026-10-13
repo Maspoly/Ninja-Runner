@@ -1,4 +1,4 @@
-package br.edu.ufersa.testgame.world;
+package br.edu.ufersa.ninja.world;
 
 public class ChunkNode {
     private Chunk chunk;

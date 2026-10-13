@@ -1,4 +1,4 @@
-package br.edu.ufersa.testgame.world;
+package br.edu.ufersa.ninja.world;
 
 import java.io.FileWriter;
 import java.io.IOException;

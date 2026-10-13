@@ -1,7 +1,4 @@
-package br.edu.ufersa.testgame.world;
-
-import java.io.FileWriter;
-import java.io.IOException;
+package br.edu.ufersa.ninja.world;
 
 public class ChunkGenerator {
     private int width;
@@ -23,53 +20,66 @@ public class ChunkGenerator {
         if (currentColumn >= width) {
             return;
         }
-        for (int y = 0; y < height; y++) {
+        for (int y = height - 1; y >= 0; y--) {
             if (y == 0) {
                 chunk.chunk[y][currentColumn] = 0; // AIR
             }
-            // verifica se a linha atual é a segunda linha da coluna, que é onde as
-            // plataformas podem ser geradas
             if (y == 1) {
                 createPlatform(y);
             }
-            // verifica se a linha atual é a última linha da coluna, que é onde o piso deve
-            // ser gerado
             if (y == height - 1) {
-                // se houver plataforma, a regra de tamanho de buraco não se aplica, então gera
-                // o piso normalmente
                 if (chunk.chunk[y][currentColumn] == ChunkElement.PLATFORM.ordinal()) {
                     chunk.chunk[y][currentColumn] = randomElement(ChunkElement.FLOOR, ChunkElement.HOLE).ordinal();
                 } else {
-                    // gera o piso, e escolhe se é chão ou buraco, com base na coluna anterior
                     chunk.chunk[y][currentColumn] = randomFloorOrHole(y).ordinal();
                 }
             }
+            if (y == 3) {
+                chunk.chunk[y][currentColumn] = createSpike(y).ordinal();
+            }
         }
-        // as três últimas linhas da coluna devem ser iguais
         chunk.chunk[height
                 - 2][currentColumn] = chunk.chunk[height - 3][currentColumn] = chunk.chunk[height - 1][currentColumn];
-        // final da geração da coluna, incrementa o currentColumn e salva o arquivo de
-        // debug
         currentColumn++;
-        // saveDebugFile();
     }
 
-    // Gera um elemento aleatório da lista de elementos fornecida, e incrementa o
-    // contador do elemento gerado
     private ChunkElement randomElement(ChunkElement... elements) {
         int randomIndex = (int) (Math.random() * elements.length);
         chunk.incrementCount(elements[randomIndex]);
         return elements[randomIndex];
     }
 
-    // Garante que não haja mais de 2 buracos consecutivos, e que não haja mais de 2
-    // buracos na chunk
+    private ChunkElement createSpike(int y) {
+        if (chunk.chunk[height - 1][currentColumn] == ChunkElement.HOLE.ordinal()) {
+            System.out.println("SPIKE");
+            return randomElement(ChunkElement.AIR);
+        } else {
+            if (chunk.count.get(ChunkElement.SPIKE) >= 2) {
+                return randomElement(ChunkElement.AIR);
+            }
+            if (getPreviousElement(y, 1) == ChunkElement.SPIKE.ordinal()
+                    && getPreviousElement(y, 2) == ChunkElement.SPIKE.ordinal()
+                    && getPreviousElement(y, 3) == ChunkElement.SPIKE.ordinal()) {
+                return randomElement(ChunkElement.AIR);
+            }
+            if (getPreviousElement(y, 1) == ChunkElement.SPIKE.ordinal()
+                    && getPreviousElement(y, 2) == ChunkElement.SPIKE.ordinal()) {
+                return randomElement(ChunkElement.AIR, ChunkElement.SPIKE);
+            }
+            if (getPreviousElement(y, 1) == ChunkElement.SPIKE.ordinal()) {
+                return randomElement(ChunkElement.AIR, ChunkElement.AIR, ChunkElement.SPIKE);
+            }
+        }
+        return randomElement(ChunkElement.AIR, ChunkElement.AIR, ChunkElement.AIR, ChunkElement.SPIKE);
+    }
+
     private ChunkElement randomFloorOrHole(int y) {
-        if (chunk.count.get(ChunkElement.HOLE) >= 2) {
+        if (chunk.count.get(ChunkElement.HOLE) >= 3) {
             return randomElement(ChunkElement.FLOOR);
         }
         if (getPreviousElement(y, 1) == ChunkElement.HOLE.ordinal()
-                && getPreviousElement(y, 2) == ChunkElement.HOLE.ordinal()) {
+                && getPreviousElement(y, 2) == ChunkElement.HOLE.ordinal()
+                && getPreviousElement(y, 3) == ChunkElement.HOLE.ordinal()) {
             return randomElement(ChunkElement.FLOOR);
         }
         return randomElement(ChunkElement.FLOOR, ChunkElement.FLOOR, ChunkElement.HOLE);
@@ -86,6 +96,10 @@ public class ChunkGenerator {
             return;
         }
         if (getPreviousElement(y, 2) == ChunkElement.PLATFORM.ordinal()) {
+            chunk.chunk[y][currentColumn] = ChunkElement.AIR.ordinal();
+            return;
+        }
+        if (getPreviousElement(y, 3) == ChunkElement.PLATFORM.ordinal()) {
             chunk.chunk[y][currentColumn] = ChunkElement.AIR.ordinal();
             return;
         }
@@ -110,18 +124,5 @@ public class ChunkGenerator {
 
     public Chunk getChunk() {
         return chunk;
-    }
-
-    private void saveDebugFile() {
-        try (FileWriter writer = new FileWriter("map_debug.txt")) {
-            for (int y = 0; y < chunk.height; y++) {
-                for (int x = 0; x < currentColumn; x++) {
-                    writer.write(chunk.chunk[y][x] + " ");
-                }
-                writer.write("\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

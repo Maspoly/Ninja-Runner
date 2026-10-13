@@ -1,4 +1,4 @@
-package br.edu.ufersa.testgame.world;
+package br.edu.ufersa.ninja.world;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -36,6 +36,9 @@ public class Mapper {
                                 x * 16 + chunk.getSection() * chunk.width * 16 - worldOffsetX, y * 16);
                     } else if ((chunk.chunk[y][x] == ChunkElement.PLATFORM.ordinal())) {
                         drawPlatform(batch, node, chunk, x, y);
+                    } else if ((chunk.chunk[y][x] == ChunkElement.SPIKE.ordinal())) {
+                        batch.draw(ChunkToTile.getTile(16),
+                                x * 16 + chunk.getSection() * chunk.width * 16 - worldOffsetX, y * 16);
                     }
                 }
             }

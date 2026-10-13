@@ -1,4 +1,4 @@
-package br.edu.ufersa.testgame.world;
+package br.edu.ufersa.ninja.world;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Texture;
