@@ -6,6 +6,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -16,6 +17,7 @@ public class TestScreen extends ScreenAdapter {
     private Rectangle collisor;
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
+    private Vector2 previousPos;
 
     public TestScreen() {
         batch = new SpriteBatch();
@@ -23,6 +25,7 @@ public class TestScreen extends ScreenAdapter {
         collisor = new Rectangle(100, 100, 16, 16);
         shapeRenderer = new ShapeRenderer();
         viewport = new FitViewport(320, 180);
+        previousPos = new Vector2(rectangle.x, rectangle.y);
     }
 
     @Override
@@ -31,24 +34,20 @@ public class TestScreen extends ScreenAdapter {
         rectangleMove(delta);
         System.out.println("x rectangle: " + rectangle.x + " y rectangle: " + rectangle.y);
         if (rectangle.overlaps(collisor)) {
-            System.out.println("x collisor: " + collisor.x + " y collisor: " + collisor.y);
-            if (rectangle.x < collisor.x + collisor.width / 2) {
-                if (rectangle.y < collisor.y + collisor.height / 2) {
-                    System.out.println("colidiu pelo canto inferior esquerdo");
-                    rectangle.x = collisor.x - rectangle.width;
-                    rectangle.y = collisor.y - rectangle.height;
-                } else {
-                    System.out.println("colidiu pelo canto superior esquerdo");
-                    rectangle.x = collisor.x - rectangle.width;
-                    rectangle.y = collisor.y + collisor.height;
-                }
-                System.out.println("colidiu pela esquerda");
+            Vector2 overlap = new Vector2();
+            overlap = rectangle.getPosition(new Vector2()).sub(previousPos);
+            if (overlap.x > 0 && previousPos.x + rectangle.width <= collisor.x) {
                 rectangle.x = collisor.x - rectangle.width;
-            } else if (rectangle.x > collisor.x + collisor.width / 2) {
-                System.out.println("colidiu pela direita");
+            } else if (overlap.x < 0 && previousPos.x >= collisor.x + collisor.width) {
                 rectangle.x = collisor.x + collisor.width;
             }
+            if (overlap.y > 0 && previousPos.y + rectangle.height <= collisor.y) {
+                rectangle.y = collisor.y - rectangle.height;
+            } else if (overlap.y < 0 && previousPos.y >= collisor.y + collisor.height) {
+                rectangle.y = collisor.y + collisor.height;
+            }
         }
+        previousPos.set(rectangle.x, rectangle.y);
         viewport.apply();
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

@@ -1,11 +1,15 @@
 package br.edu.ufersa.ninja.world;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Mapper {
     private ChunkNode current;
     private WorldGenerator worldGenerator;
     private float worldOffsetX;
+    private Map<Integer, Integer> spikesCordinates = new HashMap<>();
 
     public Mapper(WorldGenerator worldGenerator) {
         this.worldGenerator = worldGenerator;
@@ -37,13 +41,17 @@ public class Mapper {
                     } else if ((chunk.chunk[y][x] == ChunkElement.PLATFORM.ordinal())) {
                         drawPlatform(batch, node, chunk, x, y);
                     } else if ((chunk.chunk[y][x] == ChunkElement.SPIKE.ordinal())) {
-                        batch.draw(ChunkToTile.getTile(16),
-                                x * 16 + chunk.getSection() * chunk.width * 16 - worldOffsetX, y * 16);
+                        drawSpike(batch, node, chunk, x, y);
                     }
                 }
             }
             node = node.getNext();
         }
+    }
+
+    private int randomElement(int... elements) {
+        int randomIndex = (int) (Math.random() * elements.length);
+        return elements[randomIndex];
     }
 
     public void drawPlatform(SpriteBatch batch, ChunkNode node, Chunk chunk, int x, int y) {
@@ -60,6 +68,21 @@ public class Mapper {
             universalDrawChunk(batch, chunk, x, y, 5);
         } else {
             universalDrawChunk(batch, chunk, x, y, 6);
+        }
+    }
+
+    public void drawSpike(SpriteBatch batch, ChunkNode node, Chunk chunk, int x, int y) {
+        if (chunk.chunk[y][x] != ChunkElement.SPIKE.ordinal()) {
+            return;
+        }
+        if (spikesCordinates.containsKey(x + chunk.getSection() * chunk.width)) {
+            universalDrawChunk(batch, chunk, x, y, spikesCordinates.get(x + chunk.getSection() * chunk.width));
+        } else if (getNextElement(node, x, y) == ChunkElement.AIR.ordinal()) {
+            if (getPreviousElement(node, x, y) == ChunkElement.AIR.ordinal()) {
+                int index = randomElement(16, 17, 18, 19, 20);
+                universalDrawChunk(batch, chunk, x, y, index);
+                spikesCordinates.put(x + chunk.getSection() * chunk.width, index);
+            }
         }
     }
 
@@ -82,6 +105,23 @@ public class Mapper {
                 }
             } else {
                 universalDrawChunk(batch, chunk, x, y, 1);
+            }
+            return;
+        } else if (chunk.chunk[y + 1][x] == ChunkElement.SPIKE.ordinal()) {
+            if (getNextElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
+                if (getPreviousElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
+                    universalDrawChunk(batch, chunk, x, y, 27);
+                } else {
+                    universalDrawChunk(batch, chunk, x, y, 26);
+                }
+            } else if (getPreviousElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
+                if (getNextElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
+                    universalDrawChunk(batch, chunk, x, y, 27);
+                } else {
+                    universalDrawChunk(batch, chunk, x, y, 24);
+                }
+            } else {
+                universalDrawChunk(batch, chunk, x, y, 25);
             }
             return;
         } else {

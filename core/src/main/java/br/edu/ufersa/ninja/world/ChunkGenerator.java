@@ -25,7 +25,7 @@ public class ChunkGenerator {
                 chunk.chunk[y][currentColumn] = 0; // AIR
             }
             if (y == 1) {
-                createPlatform(y);
+                chunk.chunk[y][currentColumn] = createPlatform(y).ordinal();
             }
             if (y == height - 1) {
                 if (chunk.chunk[y][currentColumn] == ChunkElement.PLATFORM.ordinal()) {
@@ -85,30 +85,18 @@ public class ChunkGenerator {
         return randomElement(ChunkElement.FLOOR, ChunkElement.FLOOR, ChunkElement.HOLE);
     }
 
-    private void createPlatform(int y) {
+    private ChunkElement createPlatform(int y) {
         if (getPreviousElement(y, 1) == ChunkElement.PLATFORM.ordinal()) {
-            if (getPreviousElement(y, 2) == ChunkElement.PLATFORM.ordinal()
-                    && getPreviousElement(y, 3) == ChunkElement.PLATFORM.ordinal()) {
-                chunk.chunk[y][currentColumn] = ChunkElement.AIR.ordinal();
-                return;
+            if (getPreviousElement(y, 2) == ChunkElement.AIR.ordinal()) {
+                return randomElement(ChunkElement.PLATFORM);
             }
-            chunk.chunk[y][currentColumn] = ChunkElement.PLATFORM.ordinal();
-            return;
+            return randomElement(ChunkElement.AIR, ChunkElement.PLATFORM, ChunkElement.PLATFORM, ChunkElement.PLATFORM);
         }
-        if (getPreviousElement(y, 2) == ChunkElement.PLATFORM.ordinal()) {
-            chunk.chunk[y][currentColumn] = ChunkElement.AIR.ordinal();
-            return;
-        }
-        if (getPreviousElement(y, 3) == ChunkElement.PLATFORM.ordinal()) {
-            chunk.chunk[y][currentColumn] = ChunkElement.AIR.ordinal();
-            return;
-        }
-        if (chunk.count.get(ChunkElement.PLATFORM) < 2) {
-            chunk.chunk[y][currentColumn] = randomElement(ChunkElement.AIR, ChunkElement.AIR, ChunkElement.PLATFORM)
-                    .ordinal();
-        } else {
-            chunk.chunk[y][currentColumn] = ChunkElement.AIR.ordinal();
-        }
+        // if (chunk.chunk[height - 1][currentColumn] == ChunkElement.HOLE.ordinal()) {
+        //     return randomElement(ChunkElement.PLATFORM, ChunkElement.PLATFORM, ChunkElement.AIR);
+        // }
+        return randomElement(ChunkElement.AIR, ChunkElement.AIR, ChunkElement.AIR, ChunkElement.AIR, ChunkElement.AIR,
+                ChunkElement.AIR, ChunkElement.PLATFORM);
     }
 
     private int getPreviousElement(int y, int distance) {
