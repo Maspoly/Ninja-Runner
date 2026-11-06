@@ -25,10 +25,10 @@ public class GameScreen extends ScreenAdapter {
         batch = new SpriteBatch();
         background = new Texture("background/viewporttest.png");
         viewport = new FitViewport(320, 180);
-        player = new Player(100, 80);
+        player = new Player(100, 80, 1,1);
         mapGenerator = new WorldGenerator(8, 7);
         mapper = new Mapper(mapGenerator);
-        worldSpeed = 100.0f;
+        worldSpeed = 0.0f;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class GameScreen extends ScreenAdapter {
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ENTER)) {
             mapper.moveToNextChunk();
         }
-        player.update(delta);
+        //player.update(delta);
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);

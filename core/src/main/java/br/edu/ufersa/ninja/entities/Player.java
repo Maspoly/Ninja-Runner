@@ -1,5 +1,7 @@
 package br.edu.ufersa.ninja.entities;
 
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,10 +10,8 @@ import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class Player {
+public class Player extends Entity{
     private float speed = 100.0F;
-    private float x;
-    private float y;
     private float stateTime;
     private Texture idleSheet;
     private Animation<TextureRegion> idleAnimation;
@@ -26,9 +26,8 @@ public class Player {
     private boolean spaceWasPressed = false;
     private boolean onGround = true;
 
-    public Player(float x, float y) {
-        this.x = x;
-        this.y = y;
+    public Player(float x, float y, float width, float heigth) {
+        super(x, y, width, heigth);
         this.idleSheet = new Texture("player/player_idle-Sheet.png");
         TextureRegion[][] frames = TextureRegion.split(
                 this.idleSheet,
@@ -39,62 +38,70 @@ public class Player {
         this.stateTime = 0.0F;
     }
 
-    public void update(float delta) {
+
+    // Modificar o pulo usando Entity
+    public void update(float delta, List<Entity> other) {
         this.stateTime += delta;
-        // MOVIMENTO HORIZONTAL
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) ||
-                Gdx.input.isKeyPressed(Input.Keys.A)) {
-            this.x -= (this.speed * delta);
+        float dx = 0;
+        float dy = 0;
+
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
+            dx -= (this.speed * delta);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) ||
-                Gdx.input.isKeyPressed(Input.Keys.D)) {
-            this.x += (this.speed * delta);
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+            dx += (this.speed * delta);
         }
-        // PULO
+
+        // PULO - modificar a colisão com o cão usando a Entity
         boolean spacePressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
-        // Começou a apertar SPACE
+        // detectou espaço precionado e se não tinha sido precionado
         if (spacePressed && !spaceWasPressed) {
             if (onGround) {
-                velocityY = JUMP_SPEED;
+                velocityY = JUMP_SPEED; // 180
                 jumpTime = 0;
                 jumping = true;
                 onGround = false;
             }
         }
-        // Está segurando SPACE
+        // Se está precionando o espaço
         if (spacePressed) {
             if (jumping && jumpTime < MAX_JUMP_TIME) {
-                velocityY += JUMP_FORCE * delta;
+                velocityY += JUMP_FORCE * delta; // Aumenta a força do pulo
                 jumpTime += delta;
             }
         }
-        // Soltou SPACE
+        // Não está apertando o espaço e tinha apertado o espaço antes
         if (!spacePressed && spaceWasPressed) {
             if (jumping) {
                 if (velocityY > 0) {
-                    velocityY *= 0.5f;
+                    velocityY *= 0.5f;  // Diminuindo a velocidade
                 }
                 jumping = false;
             }
         }
         // Guarda o estado do SPACE
         spaceWasPressed = spacePressed;
+
         // GRAVIDADE
-        velocityY += GRAVITY * delta;
-        // MOVIMENTO VERTICAL
-        this.y += velocityY * delta;
-        // CHÃO
-        if (this.y <= 45) {
-            this.y = 45;
+        if (hitbox.isOverlapping(other) == null){
+            velocityY += GRAVITY * delta;    
+        }
+        else{
             velocityY = 0;
             onGround = true;
             jumping = false;
         }
+        
+        // MOVIMENTO VERTICAL
+        this.currentPos.y += velocityY * delta;
+
+        this.update(currentPos.x + dx, currentPos.y + dy);
+        this.update(other);
     }
 
     public void render(SpriteBatch batch) {
         TextureRegion currentFrame = idleAnimation.getKeyFrame(stateTime);
-        batch.draw(currentFrame, (int) x, (int) y);
+        batch.draw(currentFrame, (int) currentPos.x, (int) currentPos.y);
     }
 
     public void dispose() {
