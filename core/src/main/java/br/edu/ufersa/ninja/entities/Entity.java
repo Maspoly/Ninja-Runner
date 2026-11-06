@@ -9,8 +9,8 @@ import br.edu.ufersa.ninja.entities.collision.HitBox;
 
 public abstract class Entity {
     public HitBox hitbox;
-    private Vector2 previousPos;
-    private Vector2 currentPos;
+    protected Vector2 previousPos;
+    protected Vector2 currentPos; // Posição atual
 
     public Entity(float x, float y, float width, float height) {
         this.hitbox = new HitBox(x, y, width, height);
@@ -18,6 +18,7 @@ public abstract class Entity {
         currentPos = new Vector2(x, y);
     }
 
+    // Atualiza a posição dele de acordo com o que estiver colidindo
     public void update(List<Entity> other) {
         List<Entity> perfectList = other;
         perfectList.remove(this);
@@ -38,6 +39,7 @@ public abstract class Entity {
         }
     }
 
+    // Atualiza posição dele
     public void update(float x, float y) {
         previousPos.set(currentPos);
         currentPos.set(x, y);
