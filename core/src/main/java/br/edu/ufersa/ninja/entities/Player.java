@@ -1,6 +1,7 @@
 package br.edu.ufersa.ninja.entities;
 
 import java.util.List;
+import java.util.ArrayList; //*
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -41,7 +42,11 @@ public class Player extends Entity{
 
     // Modificar o pulo usando Entity
     public void update(float delta, List<Entity> other) {
-        this.stateTime += delta;
+        this.stateTime += delta;    
+
+        List<Entity> otherWithoutPlayer = new ArrayList<>(other);
+        otherWithoutPlayer.remove(this);
+
         float dx = 0;
         float dy = 0;
 
@@ -51,6 +56,9 @@ public class Player extends Entity{
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             dx += (this.speed * delta);
         }
+
+        // Gravidade
+        velocityY += GRAVITY * delta;
 
         // PULO - modificar a colisão com o cão usando a Entity
         boolean spacePressed = Gdx.input.isKeyPressed(Input.Keys.SPACE);
@@ -81,22 +89,26 @@ public class Player extends Entity{
         }
         // Guarda o estado do SPACE
         spaceWasPressed = spacePressed;
+        
+        // Calcula a posição tentada Y com base na velocidade vertical e no delta
+        float attemptedY = currentPos.y + velocityY * delta;
 
-        // GRAVIDADE
-        if (hitbox.isOverlapping(other) == null){
-            velocityY += GRAVITY * delta;    
-        }
-        else{
+        this.update(currentPos.x + dx, attemptedY);
+        this.update(otherWithoutPlayer);
+
+        // Se a posição atual Y for diferente da posição tentada Y, significa que houve uma colisão vertical
+        if (Math.abs(currentPos.y - attemptedY) > 0.001f) {
+            if (velocityY < 0) {
+                // Colidiu com a parte de cima da plataforma
+                onGround = true;
+            } else {
+                // Bateu a cabeça na plataforma
+                onGround = false;
+            }
+
             velocityY = 0;
-            onGround = true;
             jumping = false;
         }
-        
-        // MOVIMENTO VERTICAL
-        this.currentPos.y += velocityY * delta;
-
-        this.update(currentPos.x + dx, currentPos.y + dy);
-        this.update(other);
     }
 
     public void render(SpriteBatch batch) {
