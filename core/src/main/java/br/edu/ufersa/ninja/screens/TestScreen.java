@@ -21,6 +21,7 @@ public class TestScreen extends ScreenAdapter {
     private Viewport viewport;
     private Dummy dummy;
     private DummyCol dummyCol;
+    private DummyCol dummyColo;
     private List<Entity> colliders;
     private Player player;
 
@@ -34,9 +35,11 @@ public class TestScreen extends ScreenAdapter {
 
         
         dummyCol = new DummyCol(100, 100, 100, 16);
+        dummyColo = new DummyCol(60, 50, 100, 16);
 
         colliders = new ArrayList<>(); // Lista de entidades da cena 
         colliders.add(dummyCol);
+        colliders.add(dummyColo);
         colliders.add(dummy);
         colliders.add(player);
     }
@@ -60,6 +63,7 @@ public class TestScreen extends ScreenAdapter {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         dummy.render(shapeRenderer);  
         dummyCol.render(shapeRenderer);
+        dummyColo.render(shapeRenderer);
         shapeRenderer.end();
 
     }
