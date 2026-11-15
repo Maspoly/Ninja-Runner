@@ -64,6 +64,7 @@ public class TestScreen extends ScreenAdapter {
         dummy.render(shapeRenderer);  
         dummyCol.render(shapeRenderer);
         dummyColo.render(shapeRenderer);
+        player.render(shapeRenderer);   
         shapeRenderer.end();
 
     }
