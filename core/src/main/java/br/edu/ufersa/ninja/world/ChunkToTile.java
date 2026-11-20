@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class ChunkToTile extends ApplicationAdapter {
-    private static TextureRegion[][] tileSet = TextureRegion.split(new Texture("tile/tileset.png"), 16, 16);
+    private static TextureRegion[][] tileSet = TextureRegion.split(new Texture("assets/tile/tileset.png"), 16, 16);
 
     private ChunkToTile() {
         // Construtor privado para evitar instâncias

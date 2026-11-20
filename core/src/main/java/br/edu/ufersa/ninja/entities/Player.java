@@ -47,7 +47,7 @@ public class Player extends Entity {
     private static final float DAMAGE_COOLDOWN = 0.75f;
     private float damageCooldownRemaining = 0.0f;
     private float shieldTimeRemaining = 0.0f;
-    public Bag<Item> bag = new Bag<>(); 
+    public Bag<Item> bag = new Bag<>();
 
 
 
@@ -69,6 +69,14 @@ public class Player extends Entity {
 
     // Atualiza o jogador.
     public void update(float delta, List<Entity> other) {
+
+        System.out.println("Player position: x=" + currentPos.x + ", y=" + currentPos.y);
+        if (currentPos.y < 45) {
+            hitbox.setisActive(false);
+            System.out.println("Player is out of bounds! Hitbox deactivated.");
+            jumping = false;
+            onGround = false;
+        }
 
         this.stateTime += delta;
 

@@ -1,0 +1,96 @@
+{
+com.ray3k.tenpatch.TenPatchDrawable: {
+	start-button-loop: {
+		region: start-button-select1
+		horizontalStretchAreas: [ 0, 53 ]
+		verticalStretchAreas: [ 0, 11 ]
+		tiling: false
+		minWidth: 54
+		minHeight: 12
+		rightWidth: 0
+		leftWidth: 0
+		bottomHeight: 0
+		topHeight: 0
+		offsetX: 0
+		offsetY: 0
+		offsetXspeed: 0
+		offsetYspeed: 0
+		frameDuration: 0.08
+		regions: [
+			start-button-select1
+			start-button-select2
+			start-button-select3
+		]
+		playMode: 2
+		crushMode: 0
+	}
+	score-button-loop: {
+		region: score-button-1
+		horizontalStretchAreas: [ 0, 53 ]
+		verticalStretchAreas: [ 0, 11 ]
+		tiling: false
+		minWidth: 54
+		minHeight: 12
+		rightWidth: 0
+		leftWidth: 0
+		bottomHeight: 0
+		topHeight: 0
+		offsetX: 0
+		offsetY: 0
+		offsetXspeed: 0
+		offsetYspeed: 0
+		frameDuration: 0.08
+		regions: [
+			score-button-1
+			score-button-2
+			score-button-3
+		]
+		playMode: 2
+		crushMode: 0
+	}
+	exit-button-loop: {
+		region: exit-button2
+		horizontalStretchAreas: [ 0, 53 ]
+		verticalStretchAreas: [ 0, 11 ]
+		tiling: false
+		minWidth: 54
+		minHeight: 12
+		rightWidth: 0
+		leftWidth: 0
+		bottomHeight: 0
+		topHeight: 0
+		offsetX: 0
+		offsetY: 0
+		offsetXspeed: 0
+		offsetYspeed: 0
+		frameDuration: 0.08
+		regions: [
+			exit-button2
+			exit-button3
+			exit-button4
+		]
+		playMode: 2
+		crushMode: 0
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+	start: {
+		up: start-button
+		down: start-button-loop
+		over: start-button-loop
+		focused: start-button-loop
+	}
+	score: {
+		up: score-button1
+		down: score-button-loop
+		over: score-button-loop
+		focused: score-button-loop
+	}
+	exit: {
+		up: exit-button1
+		down: exit-button-loop
+		over: exit-button-loop
+		focused: exit-button-loop
+	}
+}
+}

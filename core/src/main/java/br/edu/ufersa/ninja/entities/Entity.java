@@ -46,4 +46,7 @@ public abstract class Entity {
         hitbox.box.setPosition(x, y);
     }
 
+    public Vector2 getCurrentPos() {
+        return currentPos;
+    }
 }

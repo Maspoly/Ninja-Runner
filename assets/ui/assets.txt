@@ -1,0 +1,6 @@
+background/teste menu.aseprite
+background/viewporttest.png
+libgdx.png
+map_debug.txt
+player/player_idle-Sheet.png
+tile/tileset.png

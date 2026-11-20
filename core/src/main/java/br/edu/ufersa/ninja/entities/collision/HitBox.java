@@ -15,6 +15,10 @@ public class HitBox {
         isActive = true;
     }
 
+    public void setisActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
     // Testa se está sobrepondo alguém, se sim retorna a entidade que está sobrepondo
     public Entity isOverlapping(List<Entity> other) {
         for (Entity entity : other) {

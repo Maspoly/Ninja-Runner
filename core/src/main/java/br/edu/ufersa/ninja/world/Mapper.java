@@ -1,9 +1,13 @@
 package br.edu.ufersa.ninja.world;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import br.edu.ufersa.ninja.entities.Entity;
+import br.edu.ufersa.ninja.entities.objects.Floor;
 
 public class Mapper {
     private ChunkNode current;
@@ -27,14 +31,14 @@ public class Mapper {
         }
     }
 
-    public void drawChunk(SpriteBatch batch) {
+    public void drawChunk(SpriteBatch batch, List<Entity> colliders) {
         ChunkNode node = worldGenerator.getFirst();
         while (node != null) {
             Chunk chunk = node.getChunkFlipped();
             for (int y = 0; y < chunk.height; y++) {
                 for (int x = 0; x < chunk.width; x++) {
                     if (chunk.chunk[y][x] == ChunkElement.FLOOR.ordinal()) {
-                        drawGround(batch, node, chunk, x, y);
+                        drawGround(batch, node, chunk, x, y, colliders);
                     } else if ((chunk.chunk[y][x] == ChunkElement.AIR.ordinal())) {
                         batch.draw(ChunkToTile.getTile(63),
                                 x * 16 + chunk.getSection() * chunk.width * 16 - worldOffsetX, y * 16);
@@ -42,6 +46,8 @@ public class Mapper {
                         drawPlatform(batch, node, chunk, x, y);
                     } else if ((chunk.chunk[y][x] == ChunkElement.SPIKE.ordinal())) {
                         drawSpike(batch, node, chunk, x, y);
+                    } else if ((chunk.chunk[y][x] == ChunkElement.ENEMY.ordinal())) {
+                        universalDrawChunk(batch, chunk, x, y, 21);
                     }
                 }
             }
@@ -86,59 +92,60 @@ public class Mapper {
         }
     }
 
-    public void drawGround(SpriteBatch batch, ChunkNode node, Chunk chunk, int x, int y) {
+    public void drawGround(SpriteBatch batch, ChunkNode node, Chunk chunk, int x, int y, List<Entity> colliders) {
         if (chunk.chunk[y][x] != ChunkElement.FLOOR.ordinal()) {
             return;
         }
         if (chunk.chunk[y + 1][x] == ChunkElement.AIR.ordinal()) {
             if (getNextElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
                 if (getPreviousElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
-                    universalDrawChunk(batch, chunk, x, y, 3);
+                    universalDrawChunkTest(batch, chunk, x, y, 3, colliders);
                 } else {
-                    universalDrawChunk(batch, chunk, x, y, 2);
+                    universalDrawChunkTest(batch, chunk, x, y, 2, colliders);
                 }
             } else if (getPreviousElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
                 if (getNextElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
-                    universalDrawChunk(batch, chunk, x, y, 3);
+                    universalDrawChunkTest(batch, chunk, x, y, 3, colliders);
                 } else {
-                    universalDrawChunk(batch, chunk, x, y, 0);
+                    universalDrawChunkTest(batch, chunk, x, y, 0, colliders);
                 }
             } else {
-                universalDrawChunk(batch, chunk, x, y, 1);
+                universalDrawChunkTest(batch, chunk, x, y, 1, colliders);
             }
             return;
-        } else if (chunk.chunk[y + 1][x] == ChunkElement.SPIKE.ordinal()) {
+        } else if (chunk.chunk[y + 1][x] == ChunkElement.SPIKE.ordinal()
+                || chunk.chunk[y + 1][x] == ChunkElement.ENEMY.ordinal()) {
             if (getNextElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
                 if (getPreviousElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
-                    universalDrawChunk(batch, chunk, x, y, 27);
+                    universalDrawChunkTest(batch, chunk, x, y, 27, colliders);
                 } else {
-                    universalDrawChunk(batch, chunk, x, y, 26);
+                    universalDrawChunkTest(batch, chunk, x, y, 26, colliders);
                 }
             } else if (getPreviousElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
                 if (getNextElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
-                    universalDrawChunk(batch, chunk, x, y, 27);
+                    universalDrawChunkTest(batch, chunk, x, y, 27, colliders);
                 } else {
-                    universalDrawChunk(batch, chunk, x, y, 24);
+                    universalDrawChunkTest(batch, chunk, x, y, 24, colliders);
                 }
             } else {
-                universalDrawChunk(batch, chunk, x, y, 25);
+                universalDrawChunkTest(batch, chunk, x, y, 25, colliders);
             }
             return;
         } else {
             if (getNextElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
                 if (getPreviousElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
-                    universalDrawChunk(batch, chunk, x, y, 11);
+                    universalDrawChunkTest(batch, chunk, x, y, 11, colliders);
                 } else {
-                    universalDrawChunk(batch, chunk, x, y, 10);
+                    universalDrawChunkTest(batch, chunk, x, y, 10, colliders);
                 }
             } else if (getPreviousElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
                 if (getNextElement(node, x, y) == ChunkElement.HOLE.ordinal()) {
-                    universalDrawChunk(batch, chunk, x, y, 11);
+                    universalDrawChunkTest(batch, chunk, x, y, 11, colliders);
                 } else {
-                    universalDrawChunk(batch, chunk, x, y, 8);
+                    universalDrawChunkTest(batch, chunk, x, y, 8, colliders);
                 }
             } else {
-                universalDrawChunk(batch, chunk, x, y, 9);
+                universalDrawChunkTest(batch, chunk, x, y, 9, colliders);
             }
         }
     }
@@ -166,12 +173,60 @@ public class Mapper {
         return chunk.chunk[y][x - 1];
     }
 
-    public void incrementWorldOffsetX(float x) {
-        this.worldOffsetX += x;
+    public void incrementWorldOffsetX(float dx, List<Entity> colliders) {
+        this.worldOffsetX += dx;
+        for (Entity entity : colliders) {
+            if (entity instanceof Floor) {
+                entity.hitbox.box.x -= dx;
+            }
+        }
     }
 
     public void universalDrawChunk(SpriteBatch batch, Chunk chunk, int x, int y, int tile) {
         float offsetX = (x * 16 + chunk.getSection() * chunk.width * 16) - worldOffsetX;
         batch.draw(ChunkToTile.getTile(tile), offsetX, y * 16);
+    }
+
+    public void universalDrawChunkTest(SpriteBatch batch, Chunk chunk, int x, int y, int tile, List<Entity> colliders) {
+        float offsetX = (x * 16 + chunk.getSection() * chunk.width * 16) - worldOffsetX;
+        float posY = y * 16;
+
+        if (offsetX + 16f >= 0f) {
+            boolean floorExists = false;
+            for (Entity entity : colliders) {
+                if (entity instanceof Floor) {
+                    if (Math.abs(entity.hitbox.box.x - offsetX) < 15f
+                            && Math.abs(entity.hitbox.box.y - posY) < 15f) {
+                        floorExists = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!floorExists) {
+                Floor newFloor = new Floor(offsetX, posY, 16, 16, ChunkToTile.getTile(tile));
+                colliders.add(newFloor);
+            }
+        }
+
+        batch.draw(ChunkToTile.getTile(tile), offsetX, posY);
+    }
+
+    public void removeOffscreenFloors(List<Entity> colliders) {
+        // long floorsBefore = colliders.stream().filter(e -> e instanceof Floor).count();
+
+        colliders.removeIf(entity -> {
+            if (entity instanceof Floor) {
+                boolean offscreen = (entity.hitbox.box.x + entity.hitbox.box.width) < 0f;
+                if (offscreen) {
+                    // System.out.println("Removendo Floor em x=" + entity.hitbox.box.x + ", y=" + entity.hitbox.box.y);
+                }
+                return offscreen;
+            }
+            return false;
+        });
+
+        // long floorsAfter = colliders.stream().filter(e -> e instanceof Floor).count();
+        // System.out.println("Floors: " + floorsBefore + " -> " + floorsAfter + " | worldOffsetX=" + worldOffsetX);
     }
 }
