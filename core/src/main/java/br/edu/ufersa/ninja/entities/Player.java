@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import br.edu.ufersa.ninja.entities.objects.Enemy;
 import br.edu.ufersa.ninja.entities.objects.Grass;
 import br.edu.ufersa.ninja.entities.objects.Heart;
+import br.edu.ufersa.ninja.entities.objects.Item;
 import br.edu.ufersa.ninja.entities.objects.Jutsu;
 import br.edu.ufersa.ninja.entities.objects.Shield;
 import br.edu.ufersa.ninja.entities.objects.Spike;
@@ -46,6 +47,9 @@ public class Player extends Entity {
     private static final float DAMAGE_COOLDOWN = 0.75f;
     private float damageCooldownRemaining = 0.0f;
     private float shieldTimeRemaining = 0.0f;
+    public Bag<Item> bag = new Bag<>(); 
+
+
 
     public Player(float x, float y, float width, float heigth) {
         super(x, y, width, heigth);
@@ -303,12 +307,7 @@ public class Player extends Entity {
     public void render(SpriteBatch batch) {
 
         TextureRegion currentFrame = idleAnimation.getKeyFrame(stateTime);
-
-        batch.draw(
-                currentFrame,
-                (int) currentPos.x,
-                (int) currentPos.y
-        );
+        batch.draw(currentFrame, (int) (currentPos.x - hitbox.box.width / 2), (int) currentPos.y - 3);
     }
 
     // Desenha a hitbox do jogador.
