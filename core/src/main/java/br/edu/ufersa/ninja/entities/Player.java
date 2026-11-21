@@ -13,13 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import br.edu.ufersa.ninja.entities.objects.Enemy;
-import br.edu.ufersa.ninja.entities.objects.Grass;
-import br.edu.ufersa.ninja.entities.objects.Heart;
 import br.edu.ufersa.ninja.entities.objects.Item;
-import br.edu.ufersa.ninja.entities.objects.Jutsu;
-import br.edu.ufersa.ninja.entities.objects.Shield;
-import br.edu.ufersa.ninja.entities.objects.Spike;
 
 public class Player extends Entity {
 
@@ -38,6 +32,7 @@ public class Player extends Entity {
     private boolean jumping = false;
     private boolean spaceWasPressed = false;
     private boolean onGround = true;
+    private boolean falling = false;
 
     // Controle de vida.
     private static final int MAX_LIVES = 5;
@@ -49,8 +44,6 @@ public class Player extends Entity {
     private float shieldTimeRemaining = 0.0f;
     public Bag<Item> bag = new Bag<>();
 
-
-
     public Player(float x, float y, float width, float heigth) {
         super(x, y, width, heigth);
 
@@ -59,8 +52,7 @@ public class Player extends Entity {
         TextureRegion[][] frames = TextureRegion.split(
                 this.idleSheet,
                 this.idleSheet.getWidth() / 4,
-                this.idleSheet.getHeight()
-        );
+                this.idleSheet.getHeight());
 
         this.idleAnimation = new Animation<>(0.14F, frames[0]);
         this.idleAnimation.setPlayMode(PlayMode.LOOP);
@@ -70,12 +62,22 @@ public class Player extends Entity {
     // Atualiza o jogador.
     public void update(float delta, List<Entity> other) {
 
+        this.update(other);
+
         System.out.println("Player position: x=" + currentPos.x + ", y=" + currentPos.y);
-        if (currentPos.y < 45) {
-            hitbox.setisActive(false);
-            System.out.println("Player is out of bounds! Hitbox deactivated.");
-            jumping = false;
-            onGround = false;
+        if (falling) {
+            if (currentPos.y < 46) {
+                hitbox.setisActive(false);
+                System.out.println("Player is out of bounds! Hitbox deactivated.");
+                jumping = false;
+                onGround = false;
+            } else {
+                falling = false;
+            }
+        }
+        if (currentPos.y < 46) {
+            falling = true;
+            System.out.println("Player is falling.");
         }
 
         this.stateTime += delta;
@@ -134,42 +136,21 @@ public class Player extends Entity {
 
         spaceWasPressed = spacePressed;
 
-        // Guarda a posição anterior para verificar o pouso em Spike.
-        float previousPlayerY = currentPos.y;
+        // 1. Eixo X
+        this.update(currentPos.x + dx, currentPos.y);
+        this.update(other);
 
+        // 2. Eixo Y
         float attemptedY = currentPos.y + velocityY * delta;
-        float attemptedX = currentPos.x + dx;
-
-        // Atualiza a posição tentada.
-        this.update(attemptedX, attemptedY);
-
-        // Executa as interações com objetos não sólidos.
-        handleObjectInteractions(otherWithoutPlayer);
-
-        // Separa os objetos que participam da colisão física.
-        List<Entity> solidEntities = getSolidEntities(otherWithoutPlayer);
-
-        // Mantém a resolução de colisões herdada de Entity.
-        this.update(solidEntities);
+        this.update(currentPos.x, attemptedY);
+        this.update(other);
 
         // Verifica se o jogador pousou sobre um Spike.
-        boolean landedOnSpike = false;
-
-        for (Entity entity : otherWithoutPlayer) {
-            if (entity instanceof Spike) {
-                Spike spike = (Spike) entity;
-
-                if (spike.resolveLanding(this, previousPlayerY, attemptedY)) {
-                    landedOnSpike = true;
-                }
-            }
-        }
 
         // Atualiza o estado do pulo após uma colisão vertical.
-        if (Math.abs(currentPos.y - attemptedY) > 0.001f
-                || landedOnSpike) {
+        if (Math.abs(currentPos.y - attemptedY) > 0.001f) {
 
-            if (velocityY < 0 || landedOnSpike) {
+            if (velocityY < 0) {
                 onGround = true;
             } else {
                 onGround = false;
@@ -186,68 +167,14 @@ public class Player extends Entity {
         if (damageCooldownRemaining > 0) {
             damageCooldownRemaining = Math.max(
                     0,
-                    damageCooldownRemaining - delta
-            );
+                    damageCooldownRemaining - delta);
         }
 
         if (shieldTimeRemaining > 0) {
             shieldTimeRemaining = Math.max(
                     0,
-                    shieldTimeRemaining - delta
-            );
+                    shieldTimeRemaining - delta);
         }
-    }
-
-    // Trata as interações com objetos que não devem bloquear o jogador.
-    private void handleObjectInteractions(List<Entity> other) {
-
-        for (Entity entity : other) {
-
-            if (!entity.hitbox.isActive
-                    || !hitbox.box.overlaps(entity.hitbox.box)) {
-                continue;
-            }
-
-            if (entity instanceof Heart) {
-                ((Heart) entity).collect(this);
-
-            } else if (entity instanceof Shield) {
-                ((Shield) entity).collect(this);
-
-            } else if (entity instanceof Enemy) {
-                ((Enemy) entity).contactPlayer(this);
-
-            } else if (entity instanceof Jutsu) {
-                ((Jutsu) entity).hitPlayer(this);
-
-            } else if (entity instanceof Spike) {
-                ((Spike) entity).damagePlayer(this);
-            }
-        }
-    }
-
-    // Retorna somente as entidades que participam da colisão física.
-    private List<Entity> getSolidEntities(List<Entity> other) {
-
-        List<Entity> solidEntities = new ArrayList<>();
-
-        for (Entity entity : other) {
-
-            if (entity instanceof Heart
-                    || entity instanceof Shield
-                    || entity instanceof Enemy
-                    || entity instanceof Jutsu
-                    || entity instanceof Spike
-                    || entity instanceof Grass) {
-                continue;
-            }
-
-            if (entity.hitbox.isActive) {
-                solidEntities.add(entity);
-            }
-        }
-
-        return solidEntities;
     }
 
     // Aplica dano ao jogador.
@@ -286,8 +213,7 @@ public class Player extends Entity {
         if (duration > 0) {
             shieldTimeRemaining = Math.max(
                     shieldTimeRemaining,
-                    duration
-            );
+                    duration);
         }
     }
 
@@ -325,8 +251,7 @@ public class Player extends Entity {
                 hitbox.box.x,
                 hitbox.box.y,
                 hitbox.box.width,
-                hitbox.box.height
-        );
+                hitbox.box.height);
     }
 
     // Libera a textura utilizada pelo jogador.

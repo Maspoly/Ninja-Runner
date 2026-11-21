@@ -213,20 +213,24 @@ public class Mapper {
     }
 
     public void removeOffscreenFloors(List<Entity> colliders) {
-        // long floorsBefore = colliders.stream().filter(e -> e instanceof Floor).count();
+        // long floorsBefore = colliders.stream().filter(e -> e instanceof
+        // Floor).count();
 
         colliders.removeIf(entity -> {
             if (entity instanceof Floor) {
                 boolean offscreen = (entity.hitbox.box.x + entity.hitbox.box.width) < 0f;
                 if (offscreen) {
-                    // System.out.println("Removendo Floor em x=" + entity.hitbox.box.x + ", y=" + entity.hitbox.box.y);
+                    // System.out.println("Removendo Floor em x=" + entity.hitbox.box.x + ", y=" +
+                    // entity.hitbox.box.y);
                 }
                 return offscreen;
             }
             return false;
         });
 
-        // long floorsAfter = colliders.stream().filter(e -> e instanceof Floor).count();
-        // System.out.println("Floors: " + floorsBefore + " -> " + floorsAfter + " | worldOffsetX=" + worldOffsetX);
+        // long floorsAfter = colliders.stream().filter(e -> e instanceof
+        // Floor).count();
+        // System.out.println("Floors: " + floorsBefore + " -> " + floorsAfter + " |
+        // worldOffsetX=" + worldOffsetX);
     }
 }

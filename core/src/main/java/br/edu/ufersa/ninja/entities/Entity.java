@@ -1,5 +1,6 @@
 package br.edu.ufersa.ninja.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.math.Rectangle;
@@ -20,7 +21,7 @@ public abstract class Entity {
 
     // Atualiza a posição dele de acordo com o que estiver colidindo
     public void update(List<Entity> other) {
-        List<Entity> perfectList = other;
+        List<Entity> perfectList = new ArrayList<Entity>(other);
         perfectList.remove(this);
         HitBox collider = hitbox.isOverlapping(perfectList) != null ? hitbox.isOverlapping(perfectList).hitbox : null;
         if (collider != null && hitbox.isActive && collider.isActive) {

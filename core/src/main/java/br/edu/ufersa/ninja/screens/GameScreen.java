@@ -35,7 +35,7 @@ public class GameScreen extends ScreenAdapter {
         batch = new SpriteBatch();
         background = new Texture("background/viewporttest.png");
         viewport = new FitViewport(320, 180);
-        player = new Player(16, 80, 10, 10);
+        player = new Player(16, 80, 16, 16);
         mapGenerator = new WorldGenerator(8, 7);
         mapper = new Mapper(mapGenerator);
         worldSpeed = 100.0f;
@@ -62,6 +62,7 @@ public class GameScreen extends ScreenAdapter {
         viewport.apply();
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        player.render(shapeRenderer);
         for (Entity entity : colliders) {
             if (entity instanceof Floor) {
                 Floor floor = (Floor) entity;

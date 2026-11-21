@@ -146,7 +146,7 @@ public class ChunkGenerator {
             return randomElement(ChunkElement.HOLE);
         }
 
-        if (chunk.count.get(ChunkElement.HOLE) >= 3) {
+        if (chunk.count.get(ChunkElement.HOLE) >= 2) {
             return randomElement(ChunkElement.FLOOR);
         }
 
