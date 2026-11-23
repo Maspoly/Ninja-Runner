@@ -21,6 +21,9 @@ public abstract class Entity {
 
     // Atualiza a posição dele de acordo com o que estiver colidindo
     public void update(List<Entity> other) {
+        if (other == null) {
+            return;
+        }
         List<Entity> perfectList = new ArrayList<Entity>(other);
         perfectList.remove(this);
         HitBox collider = hitbox.isOverlapping(perfectList) != null ? hitbox.isOverlapping(perfectList).hitbox : null;
@@ -45,6 +48,10 @@ public abstract class Entity {
         previousPos.set(currentPos);
         currentPos.set(x, y);
         hitbox.box.setPosition(x, y);
+    }
+
+    public void setCurrentPos(Vector2 pos) {
+        this.currentPos.set(pos);
     }
 
     public Vector2 getCurrentPos() {

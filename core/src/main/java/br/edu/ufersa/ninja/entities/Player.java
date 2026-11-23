@@ -32,7 +32,8 @@ public class Player extends Entity {
     private boolean jumping = false;
     private boolean spaceWasPressed = false;
     private boolean onGround = true;
-    private boolean falling = false;
+    public boolean falling = false;
+    public boolean cutscene = false;
 
     // Controle de vida.
     private static final int MAX_LIVES = 5;
@@ -64,7 +65,6 @@ public class Player extends Entity {
 
         this.update(other);
 
-        System.out.println("Player position: x=" + currentPos.x + ", y=" + currentPos.y);
         if (falling) {
             if (currentPos.y < 46) {
                 hitbox.setisActive(false);
@@ -85,21 +85,19 @@ public class Player extends Entity {
         // Atualiza os temporizadores de dano e escudo.
         updateTimers(delta);
 
-        List<Entity> otherWithoutPlayer = new ArrayList<>(other);
-        otherWithoutPlayer.remove(this);
-
         float dx = 0;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)
-                || Gdx.input.isKeyPressed(Input.Keys.A)) {
-            dx -= (this.speed * delta);
-        }
+        if (!cutscene) {
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)
+                    || Gdx.input.isKeyPressed(Input.Keys.A)) {
+                dx -= (this.speed * delta);
+            }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)
-                || Gdx.input.isKeyPressed(Input.Keys.D)) {
-            dx += (this.speed * delta);
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)
+                    || Gdx.input.isKeyPressed(Input.Keys.D)) {
+                dx += (this.speed * delta);
+            }
         }
-
         // Gravidade original.
         velocityY += GRAVITY * delta;
 
@@ -141,6 +139,9 @@ public class Player extends Entity {
         this.update(other);
 
         // 2. Eixo Y
+        if (cutscene) {
+            velocityY = 0;
+        }
         float attemptedY = currentPos.y + velocityY * delta;
         this.update(currentPos.x, attemptedY);
         this.update(other);

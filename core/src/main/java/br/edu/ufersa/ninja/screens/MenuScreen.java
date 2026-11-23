@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import br.edu.ufersa.ninja.entities.Player;
+
 public class MenuScreen extends ScreenAdapter {
     private final Game game;
     private final Stage stage;
@@ -22,8 +24,10 @@ public class MenuScreen extends ScreenAdapter {
     private SpriteBatch batch;
     private final Texture ground;
     private final Texture ground2;
+    private final Texture background;
     private float groundX = 0.0f;
     private float ground2X = 320.0f;
+    private Player player;
 
     public MenuScreen(Game game) {
         this.viewport = new FitViewport(320, 180);
@@ -32,7 +36,10 @@ public class MenuScreen extends ScreenAdapter {
         this.skin = new Skin(Gdx.files.internal("ui/buttons/button.json"));
         this.ground = new Texture(Gdx.files.internal("background/menu-ground.png"));
         this.ground2 = new Texture(Gdx.files.internal("background/menu-ground.png"));
+        this.background = new Texture(Gdx.files.internal("background/viewporttest.png"));
         this.batch = new SpriteBatch();
+        player = new Player(-32, 48, 16, 16);
+        player.cutscene = true; // Impede que o jogador se mova durante a cutscene
 
         Gdx.input.setInputProcessor(stage);
         createMenu();
@@ -45,7 +52,6 @@ public class MenuScreen extends ScreenAdapter {
         Button scoreButton = new Button(skin, "score");
         Button exitButton = new Button(skin, "exit");
         table.bottom().right().padRight(30).padBottom(60);
-
         startButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
@@ -72,7 +78,6 @@ public class MenuScreen extends ScreenAdapter {
                 }
             }
         });
-
         table.add(startButton).padRight(20);
         table.row();
         table.add(scoreButton).padRight(20).padTop(10);
@@ -94,14 +99,26 @@ public class MenuScreen extends ScreenAdapter {
             ground2X = groundX + 320.0f;
         }
 
+        player.update(delta, null);
+        if (player.getCurrentPos().x < 48) {
+            player.update(player.getCurrentPos().x + delta * 100.0f, 48);
+        } else {
+            player.update(48, 48);
+        }
+
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
+        batch.draw(background, 0, 0);
         batch.draw(ground, groundX, 0);
         batch.draw(ground2, ground2X, 0);
+        player.render(batch);
         batch.end();
 
-        stage.act(delta);
-        stage.draw();
+        if (player.getCurrentPos().x >= 48) {
+            stage.act(delta);
+            stage.draw();
+        }
+
     }
 
     @Override
