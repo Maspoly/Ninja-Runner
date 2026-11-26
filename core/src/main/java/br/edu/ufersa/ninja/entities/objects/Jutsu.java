@@ -1,7 +1,5 @@
 package br.edu.ufersa.ninja.entities.objects;
 
-import java.util.List;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
@@ -11,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import br.edu.ufersa.ninja.entities.Entity;
 import br.edu.ufersa.ninja.entities.Player;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 
 public class Jutsu extends Item {
     private static final float DEFAULT_SPEED = 250.0f;
@@ -63,7 +62,7 @@ public class Jutsu extends Item {
     }
 
     /** Atualiza o projétil e verifica alvos sem aplicar colisão física. */
-    public void update(float delta, List<Entity> other, Player player) {
+    public void update(float delta, MyList<Entity> other, Player player) {
         this.stateTime += delta;
 
         if (!isCollected) {
@@ -77,45 +76,41 @@ public class Jutsu extends Item {
 
         this.update(hitbox.box.x + direction * speed * delta, hitbox.box.y);
 
-        for (Entity entity : other) {
-            if (!hitbox.isActive || entity == this || entity == owner
-                    || !entity.hitbox.isActive || !hitbox.box.overlaps(entity.hitbox.box)) {
+        for (Entity entity : other.toArray()) {
+            if (entity == null || !hitbox.isActive || entity == this || entity == owner
+                    || entity.hitbox == null || !entity.hitbox.isActive
+                    || !hitbox.box.overlaps(entity.hitbox.box)) {
                 continue;
             }
 
             if (entity instanceof Player) {
-                hitPlayer((Player) entity);
-            } else if (entity instanceof Enemy) {
-                hitEnemy((Enemy) entity);
+                DamagePlayer((Player) entity, 1);
             }
         }
     }
 
-    /** Aplica dano ao Player; o método do Player respeita o escudo. */
-    public boolean hitPlayer(Player player) {
-        if (player == null || player == owner || !hitbox.isActive
-                || !hitbox.box.overlaps(player.hitbox.box)) {
-            return false;
-        }
-
-        boolean causedDamage = player.takeDamage(1);
-        // O projétil é absorvido tanto pelo corpo quanto pelo escudo.
-        hitbox.isActive = false;
-        return causedDamage;
+    public boolean DamagePlayer(Player player, int damage) {
+    if (player == null || player == owner || damage <= 0) {
+        return false;
     }
 
-    /** Aplica um ponto de dano ao inimigo. */
-    public boolean hitEnemy(Enemy enemy) {
-        if (enemy == null || !hitbox.isActive || !enemy.isAlive()
-                || !hitbox.box.overlaps(enemy.hitbox.box)) {
-            return false;
-        }
-
-        boolean causedDamage = enemy.takeDamage(1);
-        hitbox.isActive = false;
-        return causedDamage;
+    if (!hitbox.isActive || !player.hitbox.isActive) {
+        return false;
     }
 
+    if (hitbox.box.overlaps(player.hitbox.box)) {
+        if (!player.isAlive()) {
+            return false;
+        }
+        player.reduceLives(damage);
+        hitbox.isActive = false;
+        return true;
+    }
+
+    return false;
+}
+
+    // Verifica se o projétil colidiu com o jogador e aplica dano.
     public void setOwner(Entity owner) {
         this.owner = owner;
     }

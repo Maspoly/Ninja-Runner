@@ -1,12 +1,12 @@
 package br.edu.ufersa.ninja.world;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import br.edu.ufersa.ninja.entities.Entity;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 import br.edu.ufersa.ninja.entities.objects.Floor;
 
 public class Mapper {
@@ -31,7 +31,7 @@ public class Mapper {
         }
     }
 
-    public void drawChunk(SpriteBatch batch, List<Entity> colliders) {
+    public void drawChunk(SpriteBatch batch, MyList<Entity> colliders) {
         ChunkNode node = worldGenerator.getFirst();
         while (node != null) {
             Chunk chunk = node.getChunkFlipped();
@@ -92,7 +92,7 @@ public class Mapper {
         }
     }
 
-    public void drawGround(SpriteBatch batch, ChunkNode node, Chunk chunk, int x, int y, List<Entity> colliders) {
+    public void drawGround(SpriteBatch batch, ChunkNode node, Chunk chunk, int x, int y, MyList<Entity> colliders) {
         if (chunk.chunk[y][x] != ChunkElement.FLOOR.ordinal()) {
             return;
         }
@@ -173,9 +173,10 @@ public class Mapper {
         return chunk.chunk[y][x - 1];
     }
 
-    public void incrementWorldOffsetX(float dx, List<Entity> colliders) {
+    public void incrementWorldOffsetX(float dx, MyList<Entity> colliders) {
         this.worldOffsetX += dx;
-        for (Entity entity : colliders) {
+        for (int i = 0; i < colliders.size(); i++) {
+            Entity entity = colliders.get(i);
             if (entity instanceof Floor) {
                 entity.hitbox.box.x -= dx;
             }
@@ -187,13 +188,14 @@ public class Mapper {
         batch.draw(ChunkToTile.getTile(tile), offsetX, y * 16);
     }
 
-    public void universalDrawChunkTest(SpriteBatch batch, Chunk chunk, int x, int y, int tile, List<Entity> colliders) {
+    public void universalDrawChunkTest(SpriteBatch batch, Chunk chunk, int x, int y, int tile, MyList<Entity> colliders) {
         float offsetX = (x * 16 + chunk.getSection() * chunk.width * 16) - worldOffsetX;
         float posY = y * 16;
 
         if (offsetX + 16f >= 0f) {
             boolean floorExists = false;
-            for (Entity entity : colliders) {
+            for (int i = 0; i < colliders.size(); i++) {
+                Entity entity = colliders.get(i);
                 if (entity instanceof Floor) {
                     if (Math.abs(entity.hitbox.box.x - offsetX) < 15f
                             && Math.abs(entity.hitbox.box.y - posY) < 15f) {
@@ -212,25 +214,18 @@ public class Mapper {
         batch.draw(ChunkToTile.getTile(tile), offsetX, posY);
     }
 
-    public void removeOffscreenFloors(List<Entity> colliders) {
-        // long floorsBefore = colliders.stream().filter(e -> e instanceof
-        // Floor).count();
-
-        colliders.removeIf(entity -> {
+    public void removeOffscreenFloors(MyList<Entity> colliders) {
+        int i = 0;
+        while (i < colliders.size()) {
+            Entity entity = colliders.get(i);
             if (entity instanceof Floor) {
                 boolean offscreen = (entity.hitbox.box.x + entity.hitbox.box.width) < 0f;
                 if (offscreen) {
-                    // System.out.println("Removendo Floor em x=" + entity.hitbox.box.x + ", y=" +
-                    // entity.hitbox.box.y);
+                    colliders.remove(entity);
+                    continue; 
                 }
-                return offscreen;
             }
-            return false;
-        });
-
-        // long floorsAfter = colliders.stream().filter(e -> e instanceof
-        // Floor).count();
-        // System.out.println("Floors: " + floorsBefore + " -> " + floorsAfter + " |
-        // worldOffsetX=" + worldOffsetX);
+            i++;
+        }
     }
 }

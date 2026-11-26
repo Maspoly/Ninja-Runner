@@ -1,8 +1,5 @@
 package br.edu.ufersa.ninja.screens;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -14,6 +11,7 @@ import br.edu.ufersa.ninja.entities.Dummy;
 import br.edu.ufersa.ninja.entities.DummyCol;
 import br.edu.ufersa.ninja.entities.Entity;
 import br.edu.ufersa.ninja.entities.Player;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 
 public class TestScreen extends ScreenAdapter {
     private SpriteBatch batch;
@@ -22,7 +20,7 @@ public class TestScreen extends ScreenAdapter {
     private Dummy dummy;
     private DummyCol dummyCol;
     private DummyCol dummyColo;
-    private List<Entity> colliders;
+    private MyList<Entity> colliders;
     private Player player;
 
     public TestScreen() {
@@ -33,11 +31,10 @@ public class TestScreen extends ScreenAdapter {
 
         player = new Player(100, 150, 16, 16);
 
-        
         dummyCol = new DummyCol(100, 100, 100, 16);
         dummyColo = new DummyCol(60, 50, 100, 16);
 
-        colliders = new ArrayList<>(); // Lista de entidades da cena 
+        colliders = new MyList<>();
         colliders.add(dummyCol);
         colliders.add(dummyColo);
         colliders.add(dummy);
@@ -61,12 +58,11 @@ public class TestScreen extends ScreenAdapter {
 
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        dummy.render(shapeRenderer);  
+        dummy.render(shapeRenderer);
         dummyCol.render(shapeRenderer);
         dummyColo.render(shapeRenderer);
-        player.render(shapeRenderer);   
+        player.render(shapeRenderer);
         shapeRenderer.end();
-
     }
 
     @Override

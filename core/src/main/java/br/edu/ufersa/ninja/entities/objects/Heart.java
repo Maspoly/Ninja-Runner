@@ -1,13 +1,15 @@
 package br.edu.ufersa.ninja.entities.objects;
 
-import java.util.List;
-
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import br.edu.ufersa.ninja.entities.Entity;
 import br.edu.ufersa.ninja.entities.Player;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 
 public class Heart extends Entity {
+
+    private static final int MAX_LIVES = 3;
+
     public Heart(float x, float y, float width, float height) {
         super(x, y, width, height);
     }
@@ -24,7 +26,7 @@ public class Heart extends Entity {
         return false;
     }
 
-    public void update(float delta, List<Entity> other) {
+    public void update(float delta, MyList<Entity> other) {
         //this.update(other);
     }
 
@@ -33,4 +35,26 @@ public class Heart extends Entity {
             shapeRenderer.rect(hitbox.box.x, hitbox.box.y, hitbox.box.width, hitbox.box.height);
         }
     }    
+
+    public static void updateHearts(MyList<Heart> hearts, int lives) {
+    if (hearts == null) {
+        return;
+    }
+
+    int activeCount = Math.max(0, Math.min(3, lives));
+
+    for (Heart heart : hearts.toArray()) {
+        if (heart == null || heart.hitbox == null) {
+            continue;
+        }
+    }
+
+    int index = 0;
+    for (Heart heart : hearts.toArray()) {
+        if (heart != null && heart.hitbox != null) {
+            heart.hitbox.isActive = index < activeCount;
+            index++;
+        }
+    }
+    }
 }

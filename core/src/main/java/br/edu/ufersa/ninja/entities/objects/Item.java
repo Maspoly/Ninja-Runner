@@ -1,11 +1,10 @@
 package br.edu.ufersa.ninja.entities.objects;
 
-import java.util.List;
-
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import br.edu.ufersa.ninja.entities.Entity;
 import br.edu.ufersa.ninja.entities.Player;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 
 public abstract class Item extends Entity {
     public Item(float x, float y, float width, float height) {
@@ -13,7 +12,7 @@ public abstract class Item extends Entity {
         hitbox.isActive = false; 
     }
 
-    public void update(float delta, List<Entity> other) {
+    public void update(float delta, MyList<Entity> other) {
         this.update(other);
     }
 

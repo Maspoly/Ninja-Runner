@@ -1,12 +1,11 @@
 package br.edu.ufersa.ninja.entities.objects;
 
-import java.util.List;
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import br.edu.ufersa.ninja.entities.Entity;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 
 public class Floor extends Entity {
     TextureRegion texture;
@@ -16,7 +15,7 @@ public class Floor extends Entity {
         this.texture = texture;
     }
 
-    public void update(float delta, List<Entity> other) {
+    public void update(float delta, MyList<Entity> other) {
         this.update(other);
     }
 

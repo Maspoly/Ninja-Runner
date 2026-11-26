@@ -1,11 +1,10 @@
 package br.edu.ufersa.ninja.entities.objects;
 
-import java.util.List;
-
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import br.edu.ufersa.ninja.entities.Entity;
 import br.edu.ufersa.ninja.entities.Player;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 
 public class Spike extends Entity {
     public Spike(float x, float y, float width, float height) {
@@ -13,9 +12,9 @@ public class Spike extends Entity {
     }
 
     // Verifica se a entidade em movimento colidiu com o topo do Spike
-    //  e ajusta sua posição para simular o pouso.
+    // e ajusta sua posição para simular o pouso.
     public boolean resolveLanding(Entity movingEntity, float previousY, float attemptedY) {
-        if (movingEntity == null || !hitbox.isActive) {
+        if (movingEntity == null || !hitbox.isActive || movingEntity.hitbox == null) {
             return false;
         }
 
@@ -27,7 +26,7 @@ public class Spike extends Entity {
                 && entityLeft < hitbox.box.x + hitbox.box.width;
         boolean crossedFromAbove = previousY >= spikeTop && attemptedY <= spikeTop;
 
-        // Se a entidade em movimento colidiu com o topo do Spike, 
+        // Se a entidade em movimento colidiu com o topo do Spike,
         // ajusta sua posição para simular o pouso
         if (overlapsHorizontally && crossedFromAbove) {
             movingEntity.update(movingEntity.hitbox.box.x,
@@ -37,28 +36,27 @@ public class Spike extends Entity {
         return false;
     }
 
-    //Causa um ponto de dano; a invulnerabilidade é controlada pelo Player. 
+    // Causa 1 ponto de dano reduzindo as vidas do Player ao encostar.
     public boolean damagePlayer(Player player) {
-        if (player == null || !hitbox.isActive || !hitbox.box.overlaps(player.hitbox.box)) {
+        if (player == null || !hitbox.isActive || player.hitbox == null || !player.hitbox.isActive) {
             return false;
         }
-        return player.takeDamage(1);
-    }
 
-    // Espinhos também ferem inimigos ao encostar neles. 
-    public boolean damageEnemy(Enemy enemy) {
-        if (enemy == null || !hitbox.isActive || !hitbox.box.overlaps(enemy.hitbox.box)) {
+        if (!hitbox.box.overlaps(player.hitbox.box)) {
             return false;
         }
-        return enemy.takeDamage(1);
+
+        player.reduceLives(1);
+        return true;
     }
 
-    public void update(float delta, List<Entity> other) {
+    public void update(float delta, MyList<Entity> other) {
         //this.update(other);
     }
 
     public void render(ShapeRenderer shapeRenderer) {
-        shapeRenderer.rect(hitbox.box.x, hitbox.box.y, hitbox.box.width, hitbox.box.height);
+        if (hitbox.isActive) {
+            shapeRenderer.rect(hitbox.box.x, hitbox.box.y, hitbox.box.width, hitbox.box.height);
+        }
     }
-    
 }

@@ -1,7 +1,6 @@
 package br.edu.ufersa.ninja.entities;
 
-import java.util.ArrayList;
-import java.util.List;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 import br.edu.ufersa.ninja.entities.objects.Item;
 
 public class Bag<T extends Item> {
@@ -100,8 +99,8 @@ public class Bag<T extends Item> {
     }
 
     // Retorna uma lista com os itens do mais antigo para o mais recente.
-    public List<T> getItems() {
-        List<T> items = new ArrayList<>(size);
+    public MyList<T> getItems() {
+        MyList<T> items = new MyList<>();
         Node<T> currentNode = bottomNode;
 
         for (int step = 0; step < size; step++) {
