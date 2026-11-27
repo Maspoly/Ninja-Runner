@@ -1,9 +1,6 @@
 
 package br.edu.ufersa.ninja.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,10 +10,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+import br.edu.ufersa.ninja.entities.MyList.MyList;
+import br.edu.ufersa.ninja.entities.objects.Heart;
 import br.edu.ufersa.ninja.entities.objects.Item;
 
 public class Player extends Entity {
 
+    private MyList<Heart> hearts;
     private float speed = 100.0F;
     private float stateTime;
     private Texture idleSheet;
@@ -61,7 +61,7 @@ public class Player extends Entity {
     }
 
     // Atualiza o jogador.
-    public void update(float delta, List<Entity> other) {
+    public void update(float delta, MyList<Entity> other) {
 
         this.update(other);
 
@@ -178,21 +178,6 @@ public class Player extends Entity {
         }
     }
 
-    // Aplica dano ao jogador.
-    public boolean takeDamage(int damage) {
-
-        if (damage <= 0
-                || lives <= 0
-                || hasShield()
-                || damageCooldownRemaining > 0) {
-            return false;
-        }
-
-        lives = Math.max(0, lives - damage);
-        damageCooldownRemaining = DAMAGE_COOLDOWN;
-
-        return true;
-    }
 
     // Recupera vida sem ultrapassar o limite máximo.
     public boolean heal(int amount) {
@@ -258,5 +243,19 @@ public class Player extends Entity {
     // Libera a textura utilizada pelo jogador.
     public void dispose() {
         idleSheet.dispose();
+    }
+
+    public void setHearts(MyList<Heart> hearts) {
+    this.hearts = hearts;
+    Heart.updateHearts(this.hearts, this.lives);
+    }
+
+    // Reduz a quantidade de vidas do jogador e atualiza os corações
+    public void reduceLives(int amount) {
+        if (amount <= 0 || lives < 0) {
+            return;
+        }
+        this.lives = this.lives - amount;
+        Heart.updateHearts(this.hearts, this.lives);
     }
 }

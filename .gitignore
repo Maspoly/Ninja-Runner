@@ -13,7 +13,7 @@ gradle-app.setting
 /headless/build/
 /server/build/
 /shared/build/
-:lwjgl3:run
+
 world_debug.txt
 
 ## Java:

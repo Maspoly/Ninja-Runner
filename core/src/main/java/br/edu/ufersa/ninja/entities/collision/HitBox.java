@@ -1,10 +1,9 @@
 package br.edu.ufersa.ninja.entities.collision;
 
-import java.util.List;
-
 import com.badlogic.gdx.math.Rectangle;
 
 import br.edu.ufersa.ninja.entities.Entity;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 
 public class HitBox {
     public Rectangle box;
@@ -19,13 +18,17 @@ public class HitBox {
         this.isActive = isActive;
     }
 
-    // Testa se está sobrepondo alguém, se sim retorna a entidade que está sobrepondo
-    public Entity isOverlapping(List<Entity> other) {
-        for (Entity entity : other) {
-            if (entity.hitbox.isActive && box.overlaps(entity.hitbox.box)) {
-                return entity;
-            }
-        }
+    public Entity isOverlapping(MyList<Entity> other) {
+    if (other == null || !isActive) {
         return null;
+    }
+
+    for (Entity entity : other.toArray()) {
+        if (entity != null && entity.hitbox != null
+                && entity.hitbox.isActive && box.overlaps(entity.hitbox.box)) {
+            return entity;
+        }
+    }
+    return null;
     }
 }

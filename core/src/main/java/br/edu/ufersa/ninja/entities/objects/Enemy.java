@@ -24,33 +24,25 @@ public class Enemy extends Entity {
         super.update(x, y);
     }
 
-    // Aplica dano ao jogador quando ocorre contato.
-    public boolean contactPlayer(Player player) {
-        if (player == null || !hitbox.isActive) {
-            return false;
-        }
-
-        if (!hitbox.box.overlaps(player.hitbox.box)) {
-            return false;
-        }
-
-        return player.takeDamage(1);
+    // Reduz a vida do player ao encostar no Enemy.
+    public boolean damagePlayerOnContact(Player player, int damage) {   
+    if (player == null || damage <= 0) {
+        return false;
     }
 
-    // Reduz a vida do inimigo.
-    public boolean takeDamage(int damage) {
-        if (damage <= 0 || !isAlive()) {
+    if (!hitbox.isActive || player.hitbox == null || !player.hitbox.isActive) {
+        return false;
+    }
+
+    if (hitbox.box.overlaps(player.hitbox.box)) {
+        if (!player.isAlive()) {
             return false;
         }
-
-        health = Math.max(0, health - damage);
-
-        // Desativa a hitbox quando o inimigo perde toda a vida.
-        if (health == 0) {
-            hitbox.isActive = false;
-        }
-
+        player.reduceLives(damage);
         return true;
+    }
+
+    return false;
     }
 
     // Retorna a vida atual.

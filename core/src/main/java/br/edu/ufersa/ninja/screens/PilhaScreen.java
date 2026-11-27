@@ -1,7 +1,6 @@
 package br.edu.ufersa.ninja.screens;
 
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.ArrayList;
 
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import br.edu.ufersa.ninja.entities.DummyCol;
 import br.edu.ufersa.ninja.entities.Entity;
 import br.edu.ufersa.ninja.entities.Player;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 import br.edu.ufersa.ninja.entities.objects.Coin;
 import br.edu.ufersa.ninja.entities.objects.Jutsu;
 
@@ -21,7 +21,7 @@ public class PilhaScreen extends ScreenAdapter {
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
     private DummyCol dummyCol;
-    private List<Entity> colliders;
+    private MyList<Entity> colliders;
     private Player player;
     //private Shield shield;
     private Coin coin;
@@ -40,7 +40,7 @@ public class PilhaScreen extends ScreenAdapter {
 
         dummyCol = new DummyCol(80, 80, 200, 16);    
 
-        colliders = new ArrayList<>(); // Lista de entidades da cena 
+        colliders = new MyList<>(); // Lista de entidades da cena 
         colliders.add(dummyCol);
         colliders.add(player);
     }

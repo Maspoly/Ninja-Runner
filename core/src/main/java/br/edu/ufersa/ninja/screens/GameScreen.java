@@ -1,8 +1,5 @@
 package br.edu.ufersa.ninja.screens;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -15,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import br.edu.ufersa.ninja.entities.Entity;
 import br.edu.ufersa.ninja.entities.Player;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 import br.edu.ufersa.ninja.entities.objects.Floor;
 import br.edu.ufersa.ninja.world.Mapper;
 import br.edu.ufersa.ninja.world.WorldGenerator;
@@ -27,7 +25,7 @@ public class GameScreen extends ScreenAdapter {
     private WorldGenerator mapGenerator;
     private Mapper mapper;
     private float worldSpeed;
-    private List<Entity> colliders;
+    private MyList<Entity> colliders;
     private ShapeRenderer shapeRenderer;
     private Game game;
 
@@ -39,7 +37,7 @@ public class GameScreen extends ScreenAdapter {
         mapGenerator = new WorldGenerator(8, 7);
         mapper = new Mapper(mapGenerator);
         worldSpeed = 100.0f;
-        colliders = new ArrayList<>();
+        colliders = new MyList<>();
         colliders.add(player);
         shapeRenderer = new ShapeRenderer();
         mapper.moveToNextChunk();
@@ -63,7 +61,8 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         player.render(shapeRenderer);
-        for (Entity entity : colliders) {
+        for (int i = 0; i < colliders.size(); i++) {
+            Entity entity = colliders.get(i);
             if (entity instanceof Floor) {
                 Floor floor = (Floor) entity;
                 floor.render(shapeRenderer);
