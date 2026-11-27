@@ -14,7 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import br.edu.ufersa.ninja.entities.Entity;
 import br.edu.ufersa.ninja.entities.Player;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 
 public class MenuScreen extends ScreenAdapter {
     private final Game game;
@@ -28,6 +30,7 @@ public class MenuScreen extends ScreenAdapter {
     private float groundX = 0.0f;
     private float ground2X = 320.0f;
     private Player player;
+    private MyList<Entity> colliders;
 
     public MenuScreen(Game game) {
         this.viewport = new FitViewport(320, 180);
@@ -40,7 +43,8 @@ public class MenuScreen extends ScreenAdapter {
         this.batch = new SpriteBatch();
         player = new Player(-32, 48, 16, 16);
         player.cutscene = true; // Impede que o jogador se mova durante a cutscene
-
+        colliders = new MyList<Entity>();
+        colliders.add(player);
         Gdx.input.setInputProcessor(stage);
         createMenu();
     }
@@ -99,7 +103,7 @@ public class MenuScreen extends ScreenAdapter {
             ground2X = groundX + 320.0f;
         }
 
-        player.update(delta, null);
+        player.update(colliders, delta);
         if (player.getCurrentPos().x < 48) {
             player.update(player.getCurrentPos().x + delta * 100.0f, 48);
         } else {

@@ -53,7 +53,7 @@ public class PilhaScreen extends ScreenAdapter {
     public void render(float delta) {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
-        player.update(delta, colliders);
+        player.update(colliders, delta);
         coin.update(player); // Atualiza o jutsu e verifica colisões com o jogador
         // shield.update(player); // Atualiza o escudo e verifica se o jogador o coletou
         viewport.apply();

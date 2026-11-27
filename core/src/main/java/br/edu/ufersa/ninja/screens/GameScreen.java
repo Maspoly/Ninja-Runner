@@ -51,7 +51,7 @@ public class GameScreen extends ScreenAdapter {
         if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ENTER)) {
             mapper.moveToNextChunk();
         }
-        player.update(delta, colliders);
+        player.update(colliders, delta);
         if (player.getCurrentPos().y < -1000) {
             game.setScreen(new MenuScreen(this.game));
 

@@ -72,8 +72,11 @@ public class Player extends Entity {
             }
         }
     
-
-        this.update(other);
+        if (other != null){
+            this.update(other);
+        }
+        
+        
 
         if (falling) {
             if (currentPos.y < 46) {
