@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 
 import br.edu.ufersa.ninja.entities.Entity;
 import br.edu.ufersa.ninja.entities.Player;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 
 public class Shield extends Item {
     private static final float DEFAULT_SHIELD_DURATION = 5.0f;
@@ -80,7 +81,16 @@ public class Shield extends Item {
         }
     }
 
-    public void update(Player player) {
+    public void update(MyList<Entity> other, float delta) {
+        Player player = null;
+        for (int i = 0; i < other.size(); i++) {
+            Entity entity = other.get(i);
+            if (entity instanceof Player) {
+                player = (Player) entity;
+            }
+        }
+    
+        
         this.stateTime += delta;
 
         if (!isCollected) {

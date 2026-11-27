@@ -26,8 +26,14 @@ public class Heart extends Entity {
         return false;
     }
 
-    public void update(float delta, MyList<Entity> other) {
-        // this.update(other);
+    public void update(MyList<Entity> other, float delta) {
+
+        for (int i = 0; i < other.size(); i++) {
+            Entity entity = other.get(i);
+            if (entity instanceof Player) {
+                Player player = (Player) entity;
+            }
+        }
     }
 
     public void render(ShapeRenderer shapeRenderer) {
