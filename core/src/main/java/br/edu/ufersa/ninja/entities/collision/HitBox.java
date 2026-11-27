@@ -19,16 +19,17 @@ public class HitBox {
     }
 
     public Entity isOverlapping(MyList<Entity> other) {
-    if (other == null || !isActive) {
-        return null;
-    }
-
-    for (Entity entity : other.toArray()) {
-        if (entity != null && entity.hitbox != null
-                && entity.hitbox.isActive && box.overlaps(entity.hitbox.box)) {
-            return entity;
+        if (other == null || !isActive) {
+            return null;
         }
-    }
-    return null;
+
+        for (int i = 0; i < other.size(); i++) {
+            Entity entity = other.get(i);
+            if (entity != null && entity.hitbox != null
+                    && entity.hitbox.isActive && box.overlaps(entity.hitbox.box)) {
+                return entity;
+            }
+        }
+        return null;
     }
 }

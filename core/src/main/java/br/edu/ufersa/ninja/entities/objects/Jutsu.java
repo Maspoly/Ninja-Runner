@@ -14,8 +14,6 @@ import br.edu.ufersa.ninja.entities.MyList.MyList;
 public class Jutsu extends Item {
     private static final float DEFAULT_SPEED = 250.0f;
 
-    private float shieldDuration;
-    private float delta = 0.016f; // Valor padrão de delta (aproximadamente 60 FPS)
     private boolean isCollected = false;
     private float stateTime;
     private Texture idleSheet;
@@ -38,8 +36,7 @@ public class Jutsu extends Item {
         TextureRegion[][] frames = TextureRegion.split(
                 this.idleSheet,
                 this.idleSheet.getWidth() / 4,
-                this.idleSheet.getHeight()
-        );
+                this.idleSheet.getHeight());
 
         this.idleAnimation = new Animation<>(0.14F, frames[0]);
         this.idleAnimation.setPlayMode(PlayMode.LOOP);
@@ -53,8 +50,7 @@ public class Jutsu extends Item {
         TextureRegion[][] frames = TextureRegion.split(
                 this.idleSheet,
                 this.idleSheet.getWidth() / 4,
-                this.idleSheet.getHeight()
-        );
+                this.idleSheet.getHeight());
 
         this.idleAnimation = new Animation<>(0.14F, frames[0]);
         this.idleAnimation.setPlayMode(PlayMode.LOOP);
@@ -68,7 +64,7 @@ public class Jutsu extends Item {
         if (!isCollected) {
             Jutsu object = new Jutsu();
             addBag(object, player);
-        } 
+        }
 
         if (!hitbox.isActive || delta <= 0) {
             return;
@@ -76,7 +72,8 @@ public class Jutsu extends Item {
 
         this.update(hitbox.box.x + direction * speed * delta, hitbox.box.y);
 
-        for (Entity entity : other.toArray()) {
+        for (int i = 0; i < other.size(); i++) {
+            Entity entity = other.get(i);
             if (entity == null || !hitbox.isActive || entity == this || entity == owner
                     || entity.hitbox == null || !entity.hitbox.isActive
                     || !hitbox.box.overlaps(entity.hitbox.box)) {
@@ -90,25 +87,25 @@ public class Jutsu extends Item {
     }
 
     public boolean DamagePlayer(Player player, int damage) {
-    if (player == null || player == owner || damage <= 0) {
-        return false;
-    }
-
-    if (!hitbox.isActive || !player.hitbox.isActive) {
-        return false;
-    }
-
-    if (hitbox.box.overlaps(player.hitbox.box)) {
-        if (!player.isAlive()) {
+        if (player == null || player == owner || damage <= 0) {
             return false;
         }
-        player.reduceLives(damage);
-        hitbox.isActive = false;
-        return true;
-    }
 
-    return false;
-}
+        if (!hitbox.isActive || !player.hitbox.isActive) {
+            return false;
+        }
+
+        if (hitbox.box.overlaps(player.hitbox.box)) {
+            if (!player.isAlive()) {
+                return false;
+            }
+            player.reduceLives(damage);
+            hitbox.isActive = false;
+            return true;
+        }
+
+        return false;
+    }
 
     // Verifica se o projétil colidiu com o jogador e aplica dano.
     public void setOwner(Entity owner) {
@@ -130,7 +127,7 @@ public class Jutsu extends Item {
     }
 
     /// Adicionar a Item
-    public void addBag(Item object, Player player){
+    public void addBag(Item object, Player player) {
         Entity dummy = verifyPlayer(player, object);
         if (dummy != null) {
             player.bag.add(object);

@@ -73,8 +73,4 @@ public class MyList<T> {
     public int size() {
         return tamanho;
     }
-
-    public T[] toArray() {
-        return (T[]) elementos;
-    }
 }

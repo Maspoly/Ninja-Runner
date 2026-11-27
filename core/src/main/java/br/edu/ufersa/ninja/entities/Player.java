@@ -40,9 +40,8 @@ public class Player extends Entity {
     private int lives = MAX_LIVES;
 
     // Controle de dano e proteção.
-    private static final float DAMAGE_COOLDOWN = 0.75f;
-    private float damageCooldownRemaining = 0.0f;
     private float shieldTimeRemaining = 0.0f;
+
     public Bag<Item> bag = new Bag<>();
 
     public Player(float x, float y, float width, float heigth) {
@@ -68,7 +67,6 @@ public class Player extends Entity {
         if (falling) {
             if (currentPos.y < 46) {
                 hitbox.setisActive(false);
-                System.out.println("Player is out of bounds! Hitbox deactivated.");
                 jumping = false;
                 onGround = false;
             } else {
@@ -77,13 +75,9 @@ public class Player extends Entity {
         }
         if (currentPos.y < 46) {
             falling = true;
-            System.out.println("Player is falling.");
         }
 
         this.stateTime += delta;
-
-        // Atualiza os temporizadores de dano e escudo.
-        updateTimers(delta);
 
         float dx = 0;
 
@@ -98,6 +92,7 @@ public class Player extends Entity {
                 dx += (this.speed * delta);
             }
         }
+
         // Gravidade original.
         velocityY += GRAVITY * delta;
 
@@ -162,37 +157,6 @@ public class Player extends Entity {
         }
     }
 
-    // Atualiza os temporizadores de dano e proteção.
-    private void updateTimers(float delta) {
-
-        if (damageCooldownRemaining > 0) {
-            damageCooldownRemaining = Math.max(
-                    0,
-                    damageCooldownRemaining - delta);
-        }
-
-        if (shieldTimeRemaining > 0) {
-            shieldTimeRemaining = Math.max(
-                    0,
-                    shieldTimeRemaining - delta);
-        }
-    }
-
-
-    // Recupera vida sem ultrapassar o limite máximo.
-    public boolean heal(int amount) {
-
-        if (amount <= 0 || lives <= 0 || lives >= MAX_LIVES) {
-            return false;
-        }
-
-        int previousLives = lives;
-
-        lives = Math.min(MAX_LIVES, lives + amount);
-
-        return lives > previousLives;
-    }
-
     // Ativa ou renova a proteção temporária.
     public void activateShield(float duration) {
 
@@ -206,6 +170,20 @@ public class Player extends Entity {
     // Verifica se o escudo está ativo.
     public boolean hasShield() {
         return shieldTimeRemaining > 0;
+    }
+
+    // Recupera vida sem ultrapassar o limite máximo.
+    public boolean heal(int amount) {
+
+        if (amount <= 0 || lives <= 0 || lives >= MAX_LIVES) {
+            return false;
+        }
+
+        int previousLives = lives;
+
+        lives = Math.min(MAX_LIVES, lives + amount);
+
+        return lives > previousLives;
     }
 
     // Retorna a quantidade atual de vidas.
@@ -246,8 +224,8 @@ public class Player extends Entity {
     }
 
     public void setHearts(MyList<Heart> hearts) {
-    this.hearts = hearts;
-    Heart.updateHearts(this.hearts, this.lives);
+        this.hearts = hearts;
+        Heart.updateHearts(this.hearts, this.lives);
     }
 
     // Reduz a quantidade de vidas do jogador e atualiza os corações

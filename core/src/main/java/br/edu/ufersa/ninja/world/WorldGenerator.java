@@ -96,4 +96,16 @@ public class WorldGenerator {
     public ChunkNode getLast() {
         return last;
     }
+
+    public void removeFirstChunk() {
+        if (first == null)
+            return;
+        first = first.getNext();
+        if (first != null) {
+            first.setPrevious(null);
+        } else {
+            last = null;
+        }
+    }
+
 }

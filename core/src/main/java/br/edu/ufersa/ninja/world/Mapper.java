@@ -188,7 +188,8 @@ public class Mapper {
         batch.draw(ChunkToTile.getTile(tile), offsetX, y * 16);
     }
 
-    public void universalDrawChunkTest(SpriteBatch batch, Chunk chunk, int x, int y, int tile, MyList<Entity> colliders) {
+    public void universalDrawChunkTest(SpriteBatch batch, Chunk chunk, int x, int y, int tile,
+            MyList<Entity> colliders) {
         float offsetX = (x * 16 + chunk.getSection() * chunk.width * 16) - worldOffsetX;
         float posY = y * 16;
 
@@ -222,10 +223,18 @@ public class Mapper {
                 boolean offscreen = (entity.hitbox.box.x + entity.hitbox.box.width) < 0f;
                 if (offscreen) {
                     colliders.remove(entity);
-                    continue; 
+                    continue;
                 }
             }
             i++;
+        }
+        ChunkNode firstNode = worldGenerator.getFirst();
+        if (firstNode != null) {
+            Chunk c = firstNode.getChunk();
+            float chunkRightEdge = (c.getSection() + 1) * c.width * 16 - worldOffsetX;
+            if (chunkRightEdge < 0f) {
+                worldGenerator.removeFirstChunk();
+            }
         }
     }
 }
