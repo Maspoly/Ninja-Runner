@@ -34,6 +34,7 @@ public class Player extends Entity {
     private boolean onGround = true;
     public boolean falling = false;
     public boolean cutscene = false;
+    public int coinsCollected = 0;
 
     // Controle de vida.
     private static final int MAX_LIVES = 5;
@@ -49,6 +50,7 @@ public class Player extends Entity {
 
         this.idleSheet = new Texture("player/player_idle-Sheet.png");
 
+        this.coinsCollected = 0;
         TextureRegion[][] frames = TextureRegion.split(
                 this.idleSheet,
                 this.idleSheet.getWidth() / 4,
@@ -60,7 +62,16 @@ public class Player extends Entity {
     }
 
     // Atualiza o jogador.
-    public void update(float delta, MyList<Entity> other) {
+    public void update( MyList<Entity> other, float delta) {
+
+        Player player = this;
+        for (int i = 0; i < other.size(); i++) {
+            Entity entity = other.get(i);
+            if (entity instanceof Player) {
+                player = (Player) entity;
+            }
+        }
+    
 
         this.update(other);
 
@@ -229,11 +240,17 @@ public class Player extends Entity {
     }
 
     // Reduz a quantidade de vidas do jogador e atualiza os corações
-    public void reduceLives(int amount) {
-        if (amount <= 0 || lives < 0) {
+    public void reduceLives() {
+        if (lives < 0) {
             return;
         }
-        this.lives = this.lives - amount;
+        this.lives = this.lives - 1;
         Heart.updateHearts(this.hearts, this.lives);
     }
+
+    // Adiciona moedas ao jogador.
+    public void addCoins() {
+        this.coinsCollected += 1;
+    }
+
 }

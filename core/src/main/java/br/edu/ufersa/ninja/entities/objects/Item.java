@@ -12,8 +12,14 @@ public abstract class Item extends Entity {
         hitbox.isActive = false; 
     }
 
-    public void update(float delta, MyList<Entity> other) {
-        this.update(other);
+    public void update(MyList<Entity> other, float delta) {
+
+        for (int i = 0; i < other.size(); i++) {
+            Entity entity = other.get(i);
+            if (entity instanceof Player) {
+                Player player = (Player) entity;
+            }
+        }
     }
 
     public Entity verifyPlayer(Player player, Entity entity) {

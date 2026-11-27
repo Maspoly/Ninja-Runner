@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import br.edu.ufersa.ninja.entities.Entity;
 import br.edu.ufersa.ninja.entities.Player;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 
 public class Enemy extends Entity {
 
@@ -39,15 +40,23 @@ public class Enemy extends Entity {
         this.stateTime = 0.0F;
     }
 
+
     // Atualiza a posição do inimigo.
-    public void update(Player player, int damage) {
-        damagePlayerOnContact(player, damage);
+    public void update(MyList<Entity> other, float delta) {
+        Player player = null;
+        for (int i = 0; i < other.size(); i++) {
+            Entity entity = other.get(i);
+            if (entity instanceof Player) {
+                player = (Player) entity;
+                damagePlayerOnContact(player);
+            }
+        }
     }
 
     // Reduz a vida do player ao encostar no Enemy.
-    public boolean damagePlayerOnContact(Player player, int damage) {
+    public boolean damagePlayerOnContact(Player player) {
 
-        if (player == null || damage <= 0) {
+        if (player == null) {
             return false;
         }
 
@@ -60,7 +69,7 @@ public class Enemy extends Entity {
                 return false;
             }
             if (hitPlayer == false) {
-                player.reduceLives(damage);
+                player.reduceLives();
                 System.out.println("Player hit by Enemy! Lives remaining: " + player.getLives());
                 hitPlayer = true;
                 return true;

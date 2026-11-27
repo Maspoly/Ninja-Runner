@@ -58,7 +58,17 @@ public class Jutsu extends Item {
     }
 
     /** Atualiza o projétil e verifica alvos sem aplicar colisão física. */
-    public void update(float delta, MyList<Entity> other, Player player) {
+    public void update( MyList<Entity> other,float delta) {
+        
+        Player player = null;
+        for (int i = 0; i < other.size(); i++) {
+            Entity entity = other.get(i);
+            if (entity instanceof Player) {
+                player = (Player) entity;
+            }
+        }
+    
+        
         this.stateTime += delta;
 
         if (!isCollected) {
@@ -99,7 +109,7 @@ public class Jutsu extends Item {
             if (!player.isAlive()) {
                 return false;
             }
-            player.reduceLives(damage);
+            player.reduceLives();
             hitbox.isActive = false;
             return true;
         }
