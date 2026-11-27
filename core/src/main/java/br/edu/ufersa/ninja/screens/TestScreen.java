@@ -45,7 +45,7 @@ public class TestScreen extends ScreenAdapter {
     public void render(float delta) {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
-        player.update(delta, colliders);
+        player.update(colliders, delta);
         dummy.update(delta, colliders);
         // dummyCol.update(delta, colliders);
 
