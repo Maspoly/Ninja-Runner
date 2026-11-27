@@ -62,21 +62,11 @@ public class Player extends Entity {
     }
 
     // Atualiza o jogador.
-    public void update( MyList<Entity> other, float delta) {
+    public void update(MyList<Entity> other, float delta) {
 
-        Player player = this;
-        for (int i = 0; i < other.size(); i++) {
-            Entity entity = other.get(i);
-            if (entity instanceof Player) {
-                player = (Player) entity;
-            }
-        }
-    
-        if (other != null){
+        if (other != null) {
             this.update(other);
         }
-        
-        
 
         if (falling) {
             if (currentPos.y < 46) {

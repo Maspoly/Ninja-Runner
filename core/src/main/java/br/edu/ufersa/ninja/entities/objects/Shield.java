@@ -15,7 +15,6 @@ public class Shield extends Item {
     private static final float DEFAULT_SHIELD_DURATION = 5.0f;
 
     private float shieldDuration;
-    private float delta = 0.016f; // Valor padrão de delta (aproximadamente 60 FPS)
     private boolean isCollected = false;
     private float stateTime;
     private Texture idleSheet;
@@ -24,7 +23,7 @@ public class Shield extends Item {
     public Shield() {
         this(0, 0, 16, 16, DEFAULT_SHIELD_DURATION);
         isCollected = false;
-        
+
     }
 
     public Shield(float x, float y, float width, float height) {
@@ -89,8 +88,8 @@ public class Shield extends Item {
                 player = (Player) entity;
             }
         }
-    
-        
+
+
         this.stateTime += delta;
 
         if (!isCollected) {
@@ -99,7 +98,7 @@ public class Shield extends Item {
         }
     }
 
-    
+
 
     // Desenha a animação do jogador.
     public void render(SpriteBatch batch) {
@@ -109,6 +108,6 @@ public class Shield extends Item {
 
     public void render(ShapeRenderer shapeRenderer) {
             shapeRenderer.rect(hitbox.box.x, hitbox.box.y, hitbox.box.width, hitbox.box.height);
-    
+
     }
 }

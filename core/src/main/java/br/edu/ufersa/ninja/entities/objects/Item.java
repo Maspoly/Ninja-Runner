@@ -9,24 +9,17 @@ import br.edu.ufersa.ninja.entities.MyList.MyList;
 public abstract class Item extends Entity {
     public Item(float x, float y, float width, float height) {
         super(x, y, width, height);
-        hitbox.isActive = false; 
+        hitbox.isActive = false;
     }
 
     public void update(MyList<Entity> other, float delta) {
-
-        for (int i = 0; i < other.size(); i++) {
-            Entity entity = other.get(i);
-            if (entity instanceof Player) {
-                Player player = (Player) entity;
-            }
-        }
     }
 
     public Entity verifyPlayer(Player player, Entity entity) {
         if (this.hitbox.box.overlaps(player.hitbox.box)) {
             return entity;
         }
-        
+
         return null;
     }
 

@@ -14,7 +14,6 @@ import br.edu.ufersa.ninja.entities.Entity;
 import br.edu.ufersa.ninja.entities.Player;
 import br.edu.ufersa.ninja.entities.MyList.MyList;
 import br.edu.ufersa.ninja.entities.objects.Coin;
-import br.edu.ufersa.ninja.entities.objects.Enemy;
 
 public class PilhaScreen extends ScreenAdapter {
     private SpriteBatch batch;
@@ -25,7 +24,6 @@ public class PilhaScreen extends ScreenAdapter {
     private Player player;
     // private Shield shield;
     private Coin coin;
-    private Enemy jutsu;
 
     public PilhaScreen() {
         batch = new SpriteBatch();
@@ -36,8 +34,6 @@ public class PilhaScreen extends ScreenAdapter {
         // 5 segundos
 
         coin = new Coin(200, 100, 16, 16); // Cria um jutsu com direção para a direita e sem dono
-
-        jutsu = new Enemy(200, 100, 16, 16); // Cria um jutsu com direção para a direita e sem dono
 
         player = new Player(100, 150, 16, 16);
 

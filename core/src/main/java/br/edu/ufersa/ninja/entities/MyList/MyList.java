@@ -33,6 +33,7 @@ public class MyList<T> {
         this.elementos = newArray;
     }
 
+    @SuppressWarnings("unchecked")
     public T get(int index) {
         if (index < 0 || index >= tamanho) {
             throw new IndexOutOfBoundsException("Índice inválido: " + index);
