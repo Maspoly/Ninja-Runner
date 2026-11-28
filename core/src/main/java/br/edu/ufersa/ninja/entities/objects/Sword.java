@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import br.edu.ufersa.ninja.entities.Entity;
 import br.edu.ufersa.ninja.entities.Player;
+import br.edu.ufersa.ninja.entities.MyList.MyList;
 
 public class Sword extends Entity{
     private boolean isCollected = false;
@@ -34,6 +35,35 @@ public class Sword extends Entity{
         this.idleAnimation.setPlayMode(PlayMode.LOOP);
         this.stateTime = 0.0F;
     } 
+
+    public void update(MyList<Entity> other, float delta) {
+
+        Player player = null;
+        for (int i = 0; i < other.size(); i++) {
+            Entity entity = other.get(i);
+            if (entity instanceof Player) {
+                player = (Player) entity;
+            }
+        }
+
+            if (player == null) {
+            return;
+        }
+
+        stateTime += delta;
+
+        float offsetX = 20f;
+        float offsetY = 0f;
+
+        this.currentPos.set(player.getCurrentPos().x + offsetX, player.getCurrentPos().y + offsetY);
+
+        if (this.hitbox != null && this.hitbox.box != null) {
+            this.hitbox.box.setPosition(
+                    this.currentPos.x - this.hitbox.box.width / 2f,
+                    this.currentPos.y - 3f
+            );
+        }
+    }
 
     public void render(ShapeRenderer shapeRenderer) {
         shapeRenderer.rect(hitbox.box.x, hitbox.box.y, hitbox.box.width, hitbox.box.height);

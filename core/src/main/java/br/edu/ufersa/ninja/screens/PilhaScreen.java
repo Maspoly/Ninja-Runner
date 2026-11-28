@@ -44,7 +44,7 @@ public class PilhaScreen extends ScreenAdapter {
 
         player = new Player(100, 150, 16, 16);
 
-        //sword = new Sword(120, 150, 32, 16); // Cria uma espada com tamanho 32x16
+        sword = new Sword(120, 150, 32, 16); // Cria uma espada com tamanho 32x16
 
         dummyCol = new DummyCol(80, 80, 200, 16);
 
@@ -54,7 +54,7 @@ public class PilhaScreen extends ScreenAdapter {
         colliders.add(enemy);
         //colliders.add(coin);
         //colliders.add(jutsu);
-        //colliders.add(sword);
+        colliders.add(sword);
     }
 
     @Override
@@ -69,6 +69,13 @@ public class PilhaScreen extends ScreenAdapter {
             }
         }
 
+        for (int i = 0; i < colliders.size(); i++) {
+            Entity entity = colliders.get(i);
+            if (entity instanceof Sword) {
+                ((Sword) entity).update(colliders, delta);
+            }
+        }
+
         //sword.update(player.getCurrentPos().x, player.getCurrentPos().y); // Atualiza a espada e verifica colisões com o jogador
         //coin.update(player); // Atualiza o jutsu e verifica colisões com o jogador
         // shield.update(player); // Atualiza o escudo e verifica se o jogador o coletou
@@ -77,17 +84,37 @@ public class PilhaScreen extends ScreenAdapter {
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         // player.render(shapeRenderer);
+
+        for (int i = 0; i < colliders.size(); i++) {
+            Entity entity = colliders.get(i);
+            if (entity instanceof Sword && entity.hitbox != null && entity.hitbox.isActive) {
+                ((Sword) entity).render(shapeRenderer);
+            }
+        }
+
         dummyCol.render(shapeRenderer);
         enemy.render(shapeRenderer);
-        //sword.render(shapeRenderer);
+        
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+       
+
         // shield.render(shapeRenderer);
         shapeRenderer.end();
 
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         player.render(batch);
+        for (int i = 0; i < colliders.size(); i++) {
+            Entity entity = colliders.get(i);
+            if (entity instanceof Sword && entity.hitbox != null && entity.hitbox.isActive) {
+                ((Sword) entity).render(batch);
+            }
+        }
+        player.render(batch);
         // shield.render(batch);
         //coin.render(batch);
+        sword.render(batch);
+        //enemy.render(batch);
         batch.end();
     }
 

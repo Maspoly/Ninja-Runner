@@ -118,9 +118,16 @@ public class Player extends Entity {
             }
             if(Gdx.input.isKeyPressed(Input.Keys.Z)) {
                 if (swordTime <= 0.0f) {
-                    swordTime = 1.0f; // Define o tempo de duração da espada
+                    swordTime = 2.0f; // Define o tempo de duração da espada
+                    System.out.println("Sword activated!");
                     other.add(new Sword(currentPos.x + 20, currentPos.y, 32, 16));
                     //adicionar a aparição da espada na tela 
+                }
+
+                if (swordTime > 0.0f) {
+                    hitbox.setisActive(true);
+                } else {
+                    hitbox.setisActive(false); 
                 }
             }
         }
