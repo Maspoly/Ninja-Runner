@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import br.edu.ufersa.ninja.entities.MyList.MyList;
+import br.edu.ufersa.ninja.entities.objects.Enemy;
 import br.edu.ufersa.ninja.entities.objects.Heart;
 import br.edu.ufersa.ninja.entities.objects.Item;
 
@@ -35,6 +36,7 @@ public class Player extends Entity {
     public boolean falling = false;
     public boolean cutscene = false;
     public int coinsCollected = 0;
+    
 
     // Controle de vida.
     private static final int MAX_LIVES = 5;
