@@ -20,6 +20,7 @@ public class Enemy extends Entity {
     private int health = 1;
     private final int maxHealth = 1;
     private boolean hitPlayer = false;
+    //private MyList<Entity> other;
 
     public Enemy(float x, float y, float width, float height) {
         super(x, y, width, height);
@@ -27,6 +28,7 @@ public class Enemy extends Entity {
         // Mantém a hitbox ativa para permitir detectar colisões
         // com Player, Jutsu e Spike.
         hitbox.isActive = true;
+        //detectedSword(other);
 
         this.idleSheet = new Texture("player/player_idle-Sheet.png");
 
@@ -51,9 +53,11 @@ public class Enemy extends Entity {
                 damagePlayerOnContact(player);
             }
         }
+
+        detectedSword(other);
     }
 
-    // Reduz a vida do player ao encostar no Enemy.
+    // 
     public boolean damagePlayerOnContact(Player player) {
 
         if (player == null) {
@@ -77,6 +81,27 @@ public class Enemy extends Entity {
         }
 
         return false;
+    }
+
+    public void detectedSword(MyList<Entity> other) {
+        Sword sword = null;
+        for (int i = 0; i < other.size(); i++) {
+            Entity entity = other.get(i);
+            if (entity instanceof Sword) {
+                sword = (Sword) entity;
+                System.out.println("Sword detected by Enemy!");
+            }
+        }
+
+        if (sword == null) {
+            return;
+        }
+
+        if (hitbox.box.overlaps(sword.hitbox.box)) {
+            System.out.println("Enemy hit by Sword! Enemy removed from the game.");
+            hitbox.setisActive(false);
+            other.remove(this);
+        }
     }
 
     // Retorna a vida atual.
@@ -109,4 +134,6 @@ public class Enemy extends Entity {
                     hitbox.box.height);
         }
     }
+
+
 }

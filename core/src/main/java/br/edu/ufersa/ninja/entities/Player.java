@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import br.edu.ufersa.ninja.entities.MyList.MyList;
 import br.edu.ufersa.ninja.entities.objects.Heart;
 import br.edu.ufersa.ninja.entities.objects.Item;
+import br.edu.ufersa.ninja.entities.objects.Sword;
 
 public class Player extends Entity {
 
@@ -35,6 +36,8 @@ public class Player extends Entity {
     public boolean falling = false;
     public boolean cutscene = false;
     public int coinsCollected = 0;
+    public float swordTime = 0.0f;
+    
 
     // Controle de vida.
     private static final int MAX_LIVES = 5;
@@ -63,6 +66,24 @@ public class Player extends Entity {
 
     // Atualiza o jogador.
     public void update(MyList<Entity> other, float delta) {
+
+        if (swordTime < 0.5f){
+            for(int i = 0; i < other.size(); i++) {
+                Entity entity = other.get(i);
+                if (entity instanceof Sword) {
+                    Sword sword = (Sword) entity;
+                    if (sword.hitbox.box.overlaps(hitbox.box)) {
+                        other.remove(sword);
+                        System.out.println("Sword collected by Player!");
+                    }
+                }
+            }
+        }
+
+        if (swordTime > 0.0f) {
+            swordTime -= delta;
+        }
+
 
         if (other != null) {
             this.update(other);
@@ -94,6 +115,13 @@ public class Player extends Entity {
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)
                     || Gdx.input.isKeyPressed(Input.Keys.D)) {
                 dx += (this.speed * delta);
+            }
+            if(Gdx.input.isKeyPressed(Input.Keys.Z)) {
+                if (swordTime <= 0.0f) {
+                    swordTime = 1.0f; // Define o tempo de duração da espada
+                    other.add(new Sword(currentPos.x + 20, currentPos.y, 32, 16));
+                    //adicionar a aparição da espada na tela 
+                }
             }
         }
 
