@@ -44,7 +44,7 @@ public class PilhaScreen extends ScreenAdapter {
 
         player = new Player(100, 150, 16, 16);
 
-        sword = new Sword(120, 150, 32, 16); // Cria uma espada com tamanho 32x16
+        //sword = new Sword(120, 150, 32, 16); // Cria uma espada com tamanho 32x16
 
         dummyCol = new DummyCol(80, 80, 200, 16);
 
@@ -54,7 +54,7 @@ public class PilhaScreen extends ScreenAdapter {
         colliders.add(enemy);
         //colliders.add(coin);
         //colliders.add(jutsu);
-        colliders.add(sword);
+        //colliders.add(sword);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class PilhaScreen extends ScreenAdapter {
             }
         }
 
-        sword.update(player.getCurrentPos().x, player.getCurrentPos().y); // Atualiza a espada e verifica colisões com o jogador
+        //sword.update(player.getCurrentPos().x, player.getCurrentPos().y); // Atualiza a espada e verifica colisões com o jogador
         //coin.update(player); // Atualiza o jutsu e verifica colisões com o jogador
         // shield.update(player); // Atualiza o escudo e verifica se o jogador o coletou
         viewport.apply();
@@ -79,7 +79,7 @@ public class PilhaScreen extends ScreenAdapter {
         // player.render(shapeRenderer);
         dummyCol.render(shapeRenderer);
         enemy.render(shapeRenderer);
-        sword.render(shapeRenderer);
+        //sword.render(shapeRenderer);
         // shield.render(shapeRenderer);
         shapeRenderer.end();
 
